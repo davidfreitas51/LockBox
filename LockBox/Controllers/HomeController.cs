@@ -1,6 +1,4 @@
-using LockBox.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace LockBox.Controllers
 {
@@ -18,15 +16,14 @@ namespace LockBox.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult CreateAccount()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Login()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }
