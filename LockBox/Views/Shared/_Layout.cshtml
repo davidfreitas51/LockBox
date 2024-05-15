@@ -25,7 +25,7 @@
     <meta name="generator" content="Hugo 0.122.0">
 </head>
 <body>
-    <header style="margin-left: 80px;">
+    <header style="background-color: darkgreen">
         <nav class="navbar navbar-expand-lg bg-body-tertiary rounded" aria-label="Thirteenth navbar example">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,18 +33,15 @@
                 </button>
 
                 <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-                    <a asp-controller="Home" asp-action="Index" class="navbar-brand col-lg-3 me-0" style="color: darkgreen;">LockBox</a>
-                    <ul class="navbar-nav col-lg-6 justify-content-lg-center">
+                    <a asp-controller="Home" asp-action="Index" class="navbar-brand me-lg-3" style="color: white;">LockBox</a>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#" style="color: darkgreen;">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link active" aria-current="page" href="#" style="color: white;">Home</a>
                         </li>
                     </ul>
-                    <div class="d-lg-flex col-lg-3 justify-content-lg-end">
-                        <div style="text-align: left;">
-                            <a asp-controller="Home" asp-action="CreateAccount" class="btn btn-primary" style="color: darkgreen; border-color: darkgreen; background-color: white;">Create account</a>
+                    <div class="d-lg-flex ms-lg-auto">
+                        <div>
+                            <a asp-controller="Home" asp-action="CreateAccount" class="btn btn-primary me-2" style="color: darkgreen; background-color: white; border-color: darkgreen;">Create account</a>
                             <a asp-controller="Home" asp-action="Login" class="btn btn-primary" style="background-color: darkgreen; border-color: darkgreen;">Login</a>
                         </div>
                     </div>
@@ -52,18 +49,18 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div >
+        <main>
             @RenderBody()
         </main>
     </div>
-    <footer class="pt-4 my-md-5 pt-md-5 border-top" style="text-align: center;">
+    <footer class="pt-4 my-md-5 pt-md-5 border-top" style="text-align: center; overflow-x: hidden;">
         <div class="row">
-            <div class="col-12 col-md">
-                <img class="mb-2" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="24" height="19">
+            <div class="col-12 col-md mb-3">
+                <img class="mb-2" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="">
                 <small class="d-block mb-3 text-body-secondary">© 2017–2024</small>
             </div>
-            <div class="col-6 col-md">
+            <div class="col-6 col-md mb-3">
                 <h5>Features</h5>
                 <ul class="list-unstyled text-small">
                     <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Cool stuff</a></li>
@@ -74,7 +71,7 @@
                     <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Last time</a></li>
                 </ul>
             </div>
-            <div class="col-6 col-md">
+            <div class="col-6 col-md mb-3">
                 <h5>Resources</h5>
                 <ul class="list-unstyled text-small">
                     <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Resource</a></li>
@@ -83,7 +80,7 @@
                     <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Final resource</a></li>
                 </ul>
             </div>
-            <div class="col-6 col-md">
+            <div class="col-6 col-md mb-3">
                 <h5>About</h5>
                 <ul class="list-unstyled text-small">
                     <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Team</a></li>
@@ -94,10 +91,9 @@
             </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
-</html>
