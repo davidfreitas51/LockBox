@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center" style="height: 75vh;">
-        <main class="form-signin w-50">
+        <main class="form-signin w-25">
             <form asp-action="CreateAccount" asp-controller="Home" method="post">
                 <h1 class="h3 mb-3 fw-normal">Create an account</h1>
 
@@ -24,12 +24,13 @@
                     <input asp-for="Password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
                     <label>Master password</label>
                 </div>
+                <small>Important: Master passwords cannot be recovered if you forget it! 12 character minimum</small>
                 <div class="form-floating">
                     <input asp-for="ConfirmPassword" type="password" class="form-control" id="floatingPassword" placeholder="Password">
                     <label for="floatingPassword">Confirm your password</label>
                 </div>
                 <br />
-                <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+                <button class="btn btn-primary w-100 py-2" type="submit">Create</button>
 
                 @if (ViewBag.User != null)
                 {

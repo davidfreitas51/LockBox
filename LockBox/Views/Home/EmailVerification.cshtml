@@ -1,33 +1,40 @@
-﻿<!DOCTYPE html>
+﻿@model UserVerificationEmailRequest
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title> OTP Verify Mockup Example </title>
     <!-- Style CSS -->
     <link rel="stylesheet" href="~/css/style.css">
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'>
 </head>
 <body>
     <main class="cd__main">
-        <body class="container-fluid bg-body-tertiary d-block">
+        <body class=" bg-body-tertiary d-block">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
                     <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
                         <div class="card-body p-5 text-center">
-                            <h4>Verify</h4>
-                            <p>Your code was sent to you via email</p>
+                            <form asp-controller="Home" asp-action="EmailVerification">
+                                <h4>Verify</h4>
+                                <p>Your code was sent to you via email</p>
 
-                            <div class="otp-field mb-4">
-                                <input type="number" />
-                                <input type="number" disabled />
-                                <input type="number" disabled />
-                                <input type="number" disabled />
-                                <input type="number" disabled />
-                                <input type="number" disabled />
-                            </div>
+                                <div class="otp-field mb-4">
+                                    <input type="number" class="otp-digit" />
+                                    <input type="number" class="otp-digit" disabled/>
+                                    <input type="number" class="otp-digit" disabled/>
+                                    <input type="number" class="otp-digit" disabled/>
+                                    <input type="number" class="otp-digit" disabled/>
+                                    <input type="number" class="otp-digit" disabled/>
+                                    <input asp-for="Code" type="hidden" />
+                                </div>
 
-                            <button class="btn btn-primary mb-3">
-                                Verify
-                            </button>
+                                <input type="hidden" asp-for="Code" id="code" />
+
+                                <button type="submit" class="btn btn-primary mb-3">
+                                    Verify
+                                </button>
+
+                            </form>
 
                             <p class="resend text-muted mb-0">
                                 Didn't receive code? <a href="">Request again</a>
@@ -41,6 +48,21 @@
 
     <!-- Script JS -->
     <script src="./js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const otpDigits = document.querySelectorAll('.otp-digit');
+
+            otpDigits.forEach(function (digitInput) {
+                digitInput.addEventListener('input', function () {
+                    let otpCode = '';
+                    otpDigits.forEach(function (input) {
+                        otpCode += input.value;
+                    });
+                    document.querySelector('input[name="Code"]').value = otpCode;
+                });
+            });
+        });
+    </script>
     <!--$%analytics%$-->
 </body>
 </html>

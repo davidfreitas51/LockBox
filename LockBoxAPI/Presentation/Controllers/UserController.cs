@@ -3,6 +3,7 @@ using LockBox.Models.Messages;
 using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace LockBoxAPI.Presentation.Controllers
@@ -37,6 +38,7 @@ namespace LockBoxAPI.Presentation.Controllers
                 MasterPasswordHash = passwordHash,
                 MasterPasswordSalt = passwordSalt,
                 VerificationToken = CreateRandomToken(),
+                Verified = false,
                 EmailVerificationCode = _emailVerification.VerificationEmail(request.Email)
             };
 
@@ -45,6 +47,27 @@ namespace LockBoxAPI.Presentation.Controllers
 
             return Ok("User successfully created!");
         }
+
+
+        [HttpPost("VerifyCode")]
+        public async Task<IActionResult> VerifyCode(UserVerificationEmailRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == request.Token);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (user.EmailVerificationCode != request.Code)
+            {
+                return BadRequest("The code don't match");
+            }
+
+            user.Verified = true;
+            await _context.SaveChangesAsync();
+
+            return Ok("User verified!");
+        }
+
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
