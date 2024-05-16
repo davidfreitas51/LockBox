@@ -30,13 +30,13 @@
                     <label for="floatingPassword">Confirm your password</label>
                 </div>
                 <br />
-                <button class="btn btn-primary w-100 py-2" type="submit">Create</button>
-
                 @if (ViewBag.Errors != null)
                 {
-                    <p style="color: red;">@ViewBag.Errors</p>
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.Errors
+                    </div>
                 }
-
+                <button class="btn btn-primary w-100 py-2" type="submit">Create</button>
             </form>
         </main>
     </div>

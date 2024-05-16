@@ -12,6 +12,12 @@
 <body>
     <div class="container d-flex justify-content-center align-items-center" style="height: 75vh;">
         <main class="form-signin w-25">
+            @if (TempData["MSG_S"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["MSG_S"]
+                </div>
+            }
             <form asp-action="Login" asp-controller="Home" method="post">
                 <h1 class="h3 mb-3 fw-normal">Sign in</h1>
 

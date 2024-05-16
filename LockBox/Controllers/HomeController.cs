@@ -1,5 +1,4 @@
 using LockBox.Commons.Models.Messages;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
@@ -91,14 +90,18 @@ namespace LockBox.Controllers
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(apiUrl, content);
 
-            return View();
+            UserEmailVerificationRequest fillFields = new UserEmailVerificationRequest
+            {
+                Email = request.Email
+            };
+            return View(fillFields);
         }
 
         [HttpPost("EmailVerification")]
         public async Task<IActionResult> EmailVerification([FromForm]UserEmailVerificationRequest request)
         {
             string json = JsonConvert.SerializeObject(request);
-            string apiUrl = "https://localhost:44394/api/User/Register";
+            string apiUrl = "https://localhost:44394/api/User/VerifyCode";
 
             HttpClient httpClient = new HttpClient();
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -106,15 +109,14 @@ namespace LockBox.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                TempData["MSG_S"] = "E-mail successfully verified!";
                 return RedirectToAction(nameof(Login));
             }
             else
             {
                 if (response.Content != null)
                 {
-                    var errorResponse = await response.Content.ReadAsStringAsync();
-                    var errorObject = JsonConvert.DeserializeObject<string>(errorResponse);
-                    ViewBag.Errors = errorObject;
+                    ViewBag.Errors = "An error ocurred, try again.";
                 }
                 return View(request);
             }
@@ -151,11 +153,6 @@ namespace LockBox.Controllers
                 ViewBag.User = "Tristeza e memes";
                 return View(request);
               }
-        }
-
-        public IActionResult Vault()
-        {
-            return View();
         }
     }
 }

@@ -14,7 +14,7 @@
                 <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
                     <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
                         <div class="card-body p-5 text-center">
-                            <form asp-controller="Home" asp-action="EmailVerification">
+                            <form asp-controller="Home" asp-action="EmailVerification" method="post">
                                 <h4>Verify</h4>
                                 <p>Your code was sent to you via email</p>
 
@@ -27,7 +27,7 @@
                                     <input type="number" class="otp-digit" disabled/>
                                     <input asp-for="Code" type="hidden" />
                                 </div>
-
+                                <input type="hidden" asp-for="Email" />
                                 <input type="hidden" asp-for="Code" id="code" />
 
                                 <button type="submit" class="btn btn-primary mb-3">
@@ -35,7 +35,12 @@
                                 </button>
 
                             </form>
-
+                            @if (ViewBag.Errors != null)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @ViewBag.Errors
+                                </div>
+                            }
                             <p class="resend text-muted mb-0">
                                 Didn't receive code? <a href="">Request again</a>
                             </p>
