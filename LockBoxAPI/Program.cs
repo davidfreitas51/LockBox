@@ -29,6 +29,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRegisteredAccountRepository, RegisteredAccountRepository>();
 builder.Services.AddScoped<VerificationEmailService>();
+builder.Services.AddScoped<JWTHandler>();
 
 builder.Services.AddDbContext<LockBoxContext>(opt =>
 opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LockBoxDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));

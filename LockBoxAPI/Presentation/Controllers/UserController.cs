@@ -4,6 +4,7 @@ using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,17 +17,18 @@ namespace LockBoxAPI.Presentation.Controllers
     public class UserController : ControllerBase
     {
         private readonly LockBoxContext _context;
+        private readonly JWTHandler _jwtHandler;
         private readonly VerificationEmailService _emailVerification;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IConfiguration _configuration;
-        public UserController(LockBoxContext context, VerificationEmailService emailVerification, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
+
+        public UserController(LockBoxContext context, VerificationEmailService emailVerification, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, JWTHandler jwtHandler)
         {
             _context = context;
             _emailVerification = emailVerification;
             _userManager = userManager;
             _signInManager = signInManager;
-            _configuration = configuration;
+            _jwtHandler = jwtHandler;
         }
 
         [HttpPost("Register")]
@@ -83,6 +85,7 @@ namespace LockBoxAPI.Presentation.Controllers
             return BadRequest();
         }
 
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginRequest request)
         {
@@ -106,7 +109,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
             if (signInResult.Succeeded)
             {
-                string token = CreateJWT(user);
+                string token = _jwtHandler.CreateJWT(user);
                 return Ok(token);
             }
             if (signInResult.IsLockedOut)
@@ -114,28 +117,6 @@ namespace LockBoxAPI.Presentation.Controllers
                 return StatusCode(429, "Account locked out. Please try again later.");
             }
             return BadRequest("Invalid login attempt.");
-        }
-
-        private string CreateJWT(AppUser appUser)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, appUser.Email),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                    claims: claims,
-                    expires: DateTime.Now.AddDays(1),
-                    signingCredentials: creds
-                 );
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
         }
     }
 }

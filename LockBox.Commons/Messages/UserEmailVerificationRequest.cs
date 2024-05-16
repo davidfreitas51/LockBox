@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LockBox.Models.Messages
+namespace LockBox.Commons.Messages
 {
     public class UserEmailVerificationRequest
     {
