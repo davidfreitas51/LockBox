@@ -30,6 +30,12 @@
                     <label for="floatingPassword">Master password</label>
                 </div>
                 <br />
+                @if (ViewBag.Errors != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.Errors
+                    </div>
+                }
                 <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
             </form>
         </main>

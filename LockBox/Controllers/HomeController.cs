@@ -8,13 +8,6 @@ namespace LockBox.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
             return View();
@@ -29,51 +22,32 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromForm]UserRegisterRequest userRegisterRequest)
         {
-            //TODO: Voltar a verificação de tamanho de senha
-            /*
-            if(userRegisterRequest.Password.Length < 12)
+            /* TODO: Remover comentários
+            if (userRegisterRequest.Password.Length < 12)
             {
                 ViewBag.Errors = "The password needs at least 12 characters";
                 return View(userRegisterRequest);
             }
-             */
-
-            if (ModelState.IsValid)
+            */
+            if (!ModelState.IsValid)
             {
-                string json = JsonConvert.SerializeObject(userRegisterRequest);
-                string apiUrl = "https://localhost:44394/api/User/Register";
-
-                HttpClient httpClient = new HttpClient();
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(apiUrl, content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["Email"] = userRegisterRequest.Email;
-                    return RedirectToAction(nameof(EmailVerification));
-                }
-                else
-                {
-                    if (response.Content != null)
-                    {
-                        var errorResponseFromAPI = await response.Content.ReadAsStringAsync();
-                        ErrorResponse errorResponse = new ErrorResponse();
-                        errorResponse.Errors.Add(errorResponseFromAPI);
-                        ViewBag.Errors = errorResponse.Errors[0];
-                    }
-                    return View(userRegisterRequest);
-                }
-            }
-            else
-            {
-                var errors = ModelState.Values
-                           .SelectMany(v => v.Errors)
-                           .Select(e => e.ErrorMessage)
-                           .ToList();
-
-                ViewBag.Errors = errors[0];
+                ViewBag.Errors = GetModelStateErrors();
+                return View(userRegisterRequest);
             }
 
+            string json = JsonConvert.SerializeObject(userRegisterRequest);
+            string apiUrl = "https://localhost:44394/api/User/Register";
+            var apiResponse =  await SendPostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                TempData["Email"] = userRegisterRequest.Email;
+                return RedirectToAction(nameof(EmailVerification));
+            }
+            if (apiResponse.Content != null)
+            {
+                ViewBag.Errors = GetFirstError(apiResponse).Result;
+            }
             return View(userRegisterRequest);
         }
 
@@ -85,10 +59,7 @@ namespace LockBox.Controllers
 
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/SendVerificationCode";
-
-            HttpClient httpClient = new HttpClient();
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(apiUrl, content);
+            var apiResponse = await SendPostRequest(json, apiUrl);
 
             UserEmailVerificationRequest fillFields = new UserEmailVerificationRequest
             {
@@ -103,23 +74,15 @@ namespace LockBox.Controllers
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/VerifyCode";
 
-            HttpClient httpClient = new HttpClient();
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(apiUrl, content);
+            var apiResponse = await SendPostRequest(json, apiUrl);
 
-            if (response.IsSuccessStatusCode)
+            if (apiResponse.IsSuccessStatusCode)
             {
                 TempData["MSG_S"] = "E-mail successfully verified!";
                 return RedirectToAction(nameof(Login));
             }
-            else
-            {
-                if (response.Content != null)
-                {
-                    ViewBag.Errors = "An error ocurred, try again.";
-                }
-                return View(request);
-            }
+            ViewBag.Errors = "An error ocurred, try again.";
+            return View(request);
         }
 
         [HttpGet]
@@ -135,24 +98,59 @@ namespace LockBox.Controllers
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/Login";
 
-            HttpClient httpClient = new HttpClient();
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(apiUrl, content);
-            
-            if (response.IsSuccessStatusCode)
+            var apiResponse = await SendPostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Vault");
             }
-            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
             {
                 TempData["Email"] = request.Email;
                 return RedirectToAction("EmailVerification");
             }
-            else
+            if (apiResponse.StatusCode == HttpStatusCode.BadRequest)
             {
-                ViewBag.User = "Tristeza e memes";
+                ViewBag.Errors = "Invalid LogIn. Check your credentials";
                 return View(request);
-              }
+            }
+            if (apiResponse.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                ViewBag.Errors = "Too many requests. Try again later";
+                return View(request);
+            }
+            ViewBag.Errors = GetFirstError(apiResponse).Result;
+            return View(request);
+        }
+
+
+
+        private string GetModelStateErrors()
+        {
+            var errors = ModelState.Values
+                           .SelectMany(v => v.Errors)
+                           .Select(e => e.ErrorMessage)
+                           .ToList();
+
+            return errors[0];
+        }
+        private async Task<HttpResponseMessage> SendPostRequest(string jsonObj, string apiUrl)
+        {
+            HttpClient httpClient = new HttpClient();
+            var content = new StringContent(jsonObj, Encoding.UTF8, "application/json");
+            return await httpClient.PostAsync(apiUrl, content);
+        }
+        private async Task<string> GetFirstError(HttpResponseMessage responseMessage)
+        {
+            if(responseMessage.Content != null)
+            {
+                var errorResponseFromAPI = await responseMessage.Content.ReadAsStringAsync();
+                ErrorResponse errorResponse = new ErrorResponse();
+                errorResponse.Errors.Add(errorResponseFromAPI);
+
+                return errorResponse.Errors[0];
+            }
+            return "Error";
         }
     }
 }
