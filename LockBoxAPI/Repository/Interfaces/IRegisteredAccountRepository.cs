@@ -4,9 +4,9 @@ namespace LockBoxAPI.Repository.Contracts
 {
     public interface IRegisteredAccountRepository
     {
-        public void CreateAccountPasswords(User user, RegisteredAccount registeredAccount);
-        public List<RegisteredAccount> GetAllAccountPasswords(User user);
-        public void UpdateRegisteredAccount(User user, int id);
-        public void DeleteRegisteredAccount(User user, int id);
+        public void CreateAccountPasswords(AppUser user, RegisteredAccount registeredAccount);
+        public List<RegisteredAccount> GetAllAccountPasswords(AppUser user);
+        public void UpdateRegisteredAccount(AppUser user, int id);
+        public void DeleteRegisteredAccount(AppUser user, int id);
     }
 }

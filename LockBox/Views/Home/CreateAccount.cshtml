@@ -32,9 +32,9 @@
                 <br />
                 <button class="btn btn-primary w-100 py-2" type="submit">Create</button>
 
-                @if (ViewBag.User != null)
+                @if (ViewBag.Errors != null)
                 {
-                    <p>@ViewBag.User</p>
+                    <p style="text-danger">@ViewBag.Errors</p>
                 }
             </form>
         </main>

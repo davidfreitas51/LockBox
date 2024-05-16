@@ -5,22 +5,22 @@ namespace LockBoxAPI.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public void CreateUser(User user)
+        public void CreateUser(AppUser user)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteUser(User user)
+        public void DeleteUser(AppUser user)
         {
             throw new NotImplementedException();
         }
 
-        public User GetByEmail(string email)
+        public AppUser GetByEmail(string email)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateUser(User user)
+        public void UpdateUser(AppUser user)
         {
             throw new NotImplementedException();
         }

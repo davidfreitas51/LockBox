@@ -1,8 +1,8 @@
 ﻿namespace LockBox.Models.Messages
 {
-    public class UserVerificationEmailRequest
+    public class UserEmailVerificationRequest
     {
-        public string Token { get; set; }
+        public string Email { get; set; }
         public string Code { get; set; }
     }
 }

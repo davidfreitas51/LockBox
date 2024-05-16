@@ -4,9 +4,9 @@ namespace LockBoxAPI.Repository.Contracts
 {
     public interface IUserRepository
     {
-        public void CreateUser(User user);
-        public User GetByEmail(string email);
-        public void UpdateUser(User user);
-        public void DeleteUser(User user);
+        public void CreateUser(AppUser user);
+        public AppUser GetByEmail(string email);
+        public void UpdateUser(AppUser user);
+        public void DeleteUser(AppUser user);
     }
 }

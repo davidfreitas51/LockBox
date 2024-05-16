@@ -5,22 +5,22 @@ namespace LockBoxAPI.Repository
 {
     public class RegisteredAccountRepository : IRegisteredAccountRepository
     {
-        public void CreateAccountPasswords(User user, RegisteredAccount registeredAccount)
+        public void CreateAccountPasswords(AppUser user, RegisteredAccount registeredAccount)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteRegisteredAccount(User user, int id)
+        public void DeleteRegisteredAccount(AppUser user, int id)
         {
             throw new NotImplementedException();
         }
 
-        public List<RegisteredAccount> GetAllAccountPasswords(User user)
+        public List<RegisteredAccount> GetAllAccountPasswords(AppUser user)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateRegisteredAccount(User user, int id)
+        public void UpdateRegisteredAccount(AppUser user, int id)
         {
             throw new NotImplementedException();
         }

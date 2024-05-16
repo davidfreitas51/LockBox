@@ -45,12 +45,23 @@ namespace LockBox.Controllers
                 }
                 else
                 {
-                    ViewBag.User = "Tristeza e memes";
+                    if (response.Content != null)
+                    {
+                        var errorResponseFromAPI = await response.Content.ReadAsStringAsync();
+                        ErrorResponse errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(errorResponseFromAPI);
+                        ViewBag.Errors = errorResponse.Errors[0];
+                    }
+                    return View(userRegisterRequest);
                 }
             }
             else
             {
-                ViewBag.User = "Check your e-mail and password and try again";
+                var errors = ModelState.Values
+                           .SelectMany(v => v.Errors)
+                           .Select(e => e.ErrorMessage)
+                           .ToList();
+
+                ViewBag.Errors = errors[0];
             }
 
             return View(userRegisterRequest);
@@ -63,10 +74,8 @@ namespace LockBox.Controllers
         }
 
         [HttpPost("EmailVerification")]
-        public async Task<IActionResult> EmailVerification([FromForm]UserVerificationEmailRequest request)
+        public async Task<IActionResult> EmailVerification([FromForm]UserEmailVerificationRequest request)
         {
-            request.Token = "";
-
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/Register";
 
@@ -80,7 +89,12 @@ namespace LockBox.Controllers
             }
             else
             {
-                ViewBag.User = "Tristeza e memes";
+                if (response.Content != null)
+                {
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    var errorObject = JsonConvert.DeserializeObject<string>(errorResponse);
+                    ViewBag.Errors = errorObject;
+                }
                 return View(request);
             }
         }

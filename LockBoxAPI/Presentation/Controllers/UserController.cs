@@ -2,9 +2,12 @@
 using LockBox.Models.Messages;
 using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -14,82 +17,125 @@ namespace LockBoxAPI.Presentation.Controllers
     {
         private readonly LockBoxContext _context;
         private readonly VerificationEmailService _emailVerification;
-        public UserController(LockBoxContext context, VerificationEmailService emailVerification)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IConfiguration _configuration;
+        public UserController(LockBoxContext context, VerificationEmailService emailVerification, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
         {
             _context = context;
             _emailVerification = emailVerification;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _configuration = configuration;
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterRequest request)
         {
-            if (_context.Users.Any(u => u.Email == request.Email))
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            if (existingUser != null)
             {
                 return BadRequest("User already exists");
             }
 
-            CreatePasswordHash(request.Password,
-                out byte[] passwordHash,
-                out byte[] passwordSalt);
-
-            var user = new User
+            var user = new AppUser
             {
                 Email = request.Email,
-                MasterPasswordHash = passwordHash,
-                MasterPasswordSalt = passwordSalt,
-                VerificationToken = CreateRandomToken(),
-                Verified = false,
-                EmailVerificationCode = _emailVerification.VerificationEmail(request.Email)
+                UserName = request.Email,
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.CreateAsync(user, request.Password);
 
-            return Ok("User successfully created!");
+            if (result.Succeeded)
+            {
+                existingUser = await _userManager.FindByEmailAsync(request.Email);
+                existingUser.EmailVerificationCode = _emailVerification.VerificationEmail(request.Email);
+                _context.SaveChanges();
+                return Ok("User successfully created!");
+            }
+            else
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                ErrorResponse errorResponse = new ErrorResponse
+                {
+                    Errors = errors
+                };
+                return BadRequest(errorResponse);
+
+            }
         }
 
 
         [HttpPost("VerifyCode")]
-        public async Task<IActionResult> VerifyCode(UserVerificationEmailRequest request)
+        public async Task<IActionResult> VerifyCode(UserEmailVerificationRequest request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == request.Token);
+            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
             if (user == null)
             {
                 return NotFound();
             }
-            if (user.EmailVerificationCode != request.Code)
+            if (user.EmailVerificationCode == request.Code)
             {
-                return BadRequest("The code don't match");
+                user.EmailConfirmed = true;
+                _context.SaveChanges();
+                return Ok();
             }
-
-            user.Verified = true;
-            await _context.SaveChangesAsync();
-
-            return Ok("User verified!");
+            return BadRequest();
         }
 
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserLoginRequest request)
         {
-            using (var hmac = new HMACSHA512())
+            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+
+            if (user == null)
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return NotFound();
             }
+            if (user.EmailConfirmed == false)
+            {
+                return Unauthorized();
+            }
+
+            var signInResult = await _signInManager.PasswordSignInAsync(
+                request.Email,
+                request.Password,
+                isPersistent: false,
+                lockoutOnFailure: true
+            );
+
+            if (signInResult.Succeeded)
+            {
+                string token = CreateJWT(user);
+                return Ok(token);
+            }
+            if (signInResult.IsLockedOut)
+            {
+                return StatusCode(429, "Account locked out. Please try again later.");
+            }
+            return BadRequest("Invalid login attempt.");
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private string CreateJWT(AppUser appUser)
         {
-            using (var hmac = new HMACSHA512(passwordSalt))
+            List<Claim> claims = new List<Claim>
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                new Claim(ClaimTypes.Name, appUser.Email),
+            };
 
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }
-        private string CreateRandomToken()
-        {
-            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value!));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
+                    signingCredentials: creds
+                 );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }
