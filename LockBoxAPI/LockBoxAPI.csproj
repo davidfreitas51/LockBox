@@ -21,4 +21,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LockBox.Commons\LockBox.Commons.csproj" />
+  </ItemGroup>
+
 </Project>

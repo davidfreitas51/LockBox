@@ -1,14 +1,10 @@
-﻿using LockBox.Models;
-using LockBox.Models.Messages;
+﻿using Azure.Core;
+using LockBox.Commons.Models.Messages;
+using LockBox.Models;
 using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -50,9 +46,6 @@ namespace LockBoxAPI.Presentation.Controllers
 
             if (result.Succeeded)
             {
-                existingUser = await _userManager.FindByEmailAsync(request.Email);
-                existingUser.EmailVerificationCode = _emailVerification.VerificationEmail(request.Email);
-                _context.SaveChanges();
                 return Ok("User successfully created!");
             }
             else
@@ -68,10 +61,28 @@ namespace LockBoxAPI.Presentation.Controllers
         }
 
 
+        [HttpPost("SendVerificationCode")]
+        public async Task<IActionResult> SendVerificationCode(UserAskConfirmationEmail request)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+
+            if ( existingUser == null)
+            {
+                return NotFound();
+            }
+
+            existingUser = await _userManager.FindByEmailAsync(request.Email);
+            existingUser.EmailVerificationCode = _emailVerification.VerificationEmail(request.Email);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+
         [HttpPost("VerifyCode")]
         public async Task<IActionResult> VerifyCode(UserEmailVerificationRequest request)
         {
-            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+            var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
                 return NotFound();
@@ -89,7 +100,7 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginRequest request)
         {
-            var user = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
