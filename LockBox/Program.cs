@@ -1,4 +1,5 @@
 using LockBox.Commons.Services;
+using LockBox.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,12 +10,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.ExpireTimeSpan = TimeSpan.FromSeconds(1);
         options.SlidingExpiration = true;
         options.LoginPath = "/Home/Login";
         options.AccessDeniedPath = "/Forbidden/";
     });
 builder.Services.AddScoped<JWTHandler>();
+builder.Services.AddScoped<SendRequestService>();
 
 var app = builder.Build();
 

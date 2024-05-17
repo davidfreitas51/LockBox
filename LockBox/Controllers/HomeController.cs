@@ -1,22 +1,24 @@
 using LockBox.Commons.Models.Messages;
 using LockBox.Commons.Services;
 using LockBox.Models;
+using LockBox.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 
 namespace LockBox.Controllers
 {
     public class HomeController : Controller
     {
         private readonly JWTHandler _jwtHandler;
-        public HomeController(JWTHandler jwtHandler)
+        private readonly SendRequestService _sendRequestService;
+        public HomeController(JWTHandler jwtHandler, SendRequestService sendRequestService)
         {
             _jwtHandler = jwtHandler;
+            _sendRequestService = sendRequestService;
         }
         public IActionResult Index()
         {
@@ -47,7 +49,7 @@ namespace LockBox.Controllers
 
             string json = JsonConvert.SerializeObject(userRegisterRequest);
             string apiUrl = "https://localhost:44394/api/User/Register";
-            var apiResponse =  await SendPostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -69,7 +71,7 @@ namespace LockBox.Controllers
 
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/SendVerificationCode";
-            var apiResponse = await SendPostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
 
             UserEmailVerificationRequest fillFields = new UserEmailVerificationRequest
             {
@@ -84,7 +86,7 @@ namespace LockBox.Controllers
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/VerifyCode";
 
-            var apiResponse = await SendPostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -101,14 +103,13 @@ namespace LockBox.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Login([FromForm]UserLoginRequest request)
         {
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/Login";
 
-            var apiResponse = await SendPostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -166,12 +167,6 @@ namespace LockBox.Controllers
                            .ToList();
 
             return errors[0];
-        }
-        private async Task<HttpResponseMessage> SendPostRequest(string jsonObj, string apiUrl)
-        {
-            HttpClient httpClient = new HttpClient();
-            var content = new StringContent(jsonObj, Encoding.UTF8, "application/json");
-            return await httpClient.PostAsync(apiUrl, content);
         }
         private async Task<string> GetFirstError(HttpResponseMessage responseMessage)
         {

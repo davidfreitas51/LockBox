@@ -1,7 +1,7 @@
 ﻿using LockBox.Models;
+using LockBox.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using System.Text.Json;
 
 namespace LockBox.Controllers
@@ -9,29 +9,35 @@ namespace LockBox.Controllers
     [Authorize]
     public class VaultController : Controller
     {
+        private readonly SendRequestService _sendRequestService;
+        public VaultController(SendRequestService sendRequestService)
+        {
+            _sendRequestService = sendRequestService;
+        }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             string userInfoJson = Request.Cookies["UserCookies"];
             string apiUrl = "https://localhost:44394/api/GetAccounts";
 
-            var apiResponse = await SendPostRequest(userInfoJson, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(userInfoJson, apiUrl);
 
             if (!apiResponse.IsSuccessStatusCode)
             {
-                return View("Error");
+                return View();
             }
 
             string responseContent = await apiResponse.Content.ReadAsStringAsync();
             List<RegisteredAccount> accountsList = JsonSerializer.Deserialize<List<RegisteredAccount>>(responseContent);
 
-            return View(accountsList);
-        }
-        private async Task<HttpResponseMessage> SendPostRequest(string jsonObj, string apiUrl)
-        {
-            HttpClient httpClient = new HttpClient();
-            var content = new StringContent(jsonObj, Encoding.UTF8, "application/json");
-            return await httpClient.PostAsync(apiUrl, content);
+            if (accountsList != null && accountsList.Count > 0)
+            {
+                return View(accountsList);
+            }
+            else
+            {
+                return View((object)null);
+            }   
         }
     }
 }
