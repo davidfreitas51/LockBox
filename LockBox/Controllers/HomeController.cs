@@ -132,6 +132,9 @@ namespace LockBox.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
+                var cookieOptions = new CookieOptions();
+                cookieOptions.Expires = DateTime.Now.AddMinutes(5);
+                Response.Cookies.Append("UserCookies", tokenJSON, cookieOptions);
                 return RedirectToAction("Index", "Vault");
             }
             if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
