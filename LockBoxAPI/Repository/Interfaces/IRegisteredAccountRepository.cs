@@ -1,12 +1,13 @@
-﻿using LockBox.Models;
+﻿using LockBox.Commons.Models.Messages.RegisteredAccount;
+using LockBox.Models;
 
 namespace LockBoxAPI.Repository.Contracts
 {
     public interface IRegisteredAccountRepository
     {
-        public void CreateAccountPasswords(AppUser user, RegisteredAccount registeredAccount);
-        public List<RegisteredAccount> GetAllAccountPasswords(AppUser user);
-        public void UpdateRegisteredAccount(AppUser user, int id);
-        public void DeleteRegisteredAccount(AppUser user, int id);
+        public void RegisterAccount(RegisteredAccount accToRegister);
+        public List<RegisteredAccount> GetRegisteredAccountsByUser(AppUser user);
+        public void UpdateRegisteredAccount(RegisteredAccount accToUpdate);
+        public void DeleteRegisteredAccount(RegisteredAccount accToDelete);
     }
 }

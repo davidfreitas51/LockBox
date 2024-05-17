@@ -1,4 +1,5 @@
 using LockBox.Commons.Models.Messages;
+using LockBox.Commons.Models.Messages.User;
 using LockBox.Commons.Services;
 using LockBox.Models;
 using LockBox.Services;

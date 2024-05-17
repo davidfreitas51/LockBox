@@ -1,4 +1,4 @@
-﻿namespace LockBox.Commons.Models.Messages
+﻿namespace LockBox.Commons.Models.Messages.User
 {
     public class UserAskConfirmationEmail
     {

@@ -1,4 +1,5 @@
 ﻿using LockBox.Commons.Models.Messages;
+using LockBox.Commons.Models.Messages.User;
 using LockBox.Models;
 using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;

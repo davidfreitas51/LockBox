@@ -1,28 +1,38 @@
 ﻿using LockBox.Models;
 using LockBoxAPI.Repository.Contracts;
+using LockBoxAPI.Repository.Database;
 
-namespace LockBoxAPI.Repository
+public class RegisteredAccountRepository : IRegisteredAccountRepository
 {
-    public class RegisteredAccountRepository : IRegisteredAccountRepository
+    private readonly LockBoxContext _context;
+
+    public RegisteredAccountRepository(LockBoxContext context)
     {
-        public void CreateAccountPasswords(AppUser user, RegisteredAccount registeredAccount)
-        {
-            throw new NotImplementedException();
-        }
+        _context = context;
+    }
 
-        public void DeleteRegisteredAccount(AppUser user, int id)
-        {
-            throw new NotImplementedException();
-        }
+    public void DeleteRegisteredAccount(RegisteredAccount accToDelete)
+    {
+        _context.Remove(accToDelete);
+        _context.SaveChanges();
+    }
 
-        public List<RegisteredAccount> GetAllAccountPasswords(AppUser user)
-        {
-            throw new NotImplementedException();
-        }
+    public List<RegisteredAccount> GetRegisteredAccountsByUser(AppUser user)
+    {
+        return _context.RegisteredAccounts.Where(ra => ra.UserId == user.Id).ToList();
+    }
 
-        public void UpdateRegisteredAccount(AppUser user, int id)
-        {
-            throw new NotImplementedException();
-        }
+    public void RegisterAccount(RegisteredAccount accToRegister)
+    {
+        _context.RegisteredAccounts.Add(accToRegister);
+        _context.SaveChanges();
+    }
+
+    public void UpdateRegisteredAccount(RegisteredAccount accToUpdate)
+    {
+
+        _context.RegisteredAccounts.Update(accToUpdate);
+        _context.SaveChanges();
+
     }
 }

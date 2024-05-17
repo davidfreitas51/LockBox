@@ -17,6 +17,6 @@ namespace LockBox.Models
         public string Password { get; set; }
 
         [Required]
-        public AppUser User { get; set; }
+        public string UserId { get; set; }
     }
 }

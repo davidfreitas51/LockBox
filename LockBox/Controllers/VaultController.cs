@@ -1,4 +1,5 @@
-﻿using LockBox.Models;
+﻿using LockBox.Commons.Models.Messages.RegisteredAccount;
+using LockBox.Models;
 using LockBox.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,16 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            string userInfoJson = Request.Cookies["UserCookies"];
+            AppUser user = JsonSerializer.Deserialize<AppUser>(Request.Cookies["UserCookies"]);
+            RAGetByUserRequest request = new RAGetByUserRequest
+            {
+                AppUser = user
+            };
+            string requestJson = JsonSerializer.Serialize(request);
+
             string apiUrl = "https://localhost:44394/api/GetAccounts";
 
-            var apiResponse = await _sendRequestService.PostRequest(userInfoJson, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
 
             if (!apiResponse.IsSuccessStatusCode)
             {
