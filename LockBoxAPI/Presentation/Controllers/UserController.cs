@@ -1,10 +1,11 @@
-﻿using Azure.Core;
-using LockBox.Commons.Models.Messages;
+﻿using LockBox.Commons.Models.Messages;
 using LockBox.Models;
 using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -48,31 +49,26 @@ namespace LockBoxAPI.Presentation.Controllers
             {
                 return Ok("User successfully created!");
             }
-            else
-            {
-                var errors = result.Errors.Select(e => e.Description).ToList();
-                ErrorResponse errorResponse = new ErrorResponse
-                {
-                    Errors = errors
-                };
-                return BadRequest(errorResponse);
 
-            }
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.Errors = errors;
+
+            return BadRequest(errorResponse);
         }
 
 
         [HttpPost("SendVerificationCode")]
         public async Task<IActionResult> SendVerificationCode(UserAskConfirmationEmail request)
         {
-            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
-            if ( existingUser == null)
+            if ( user == null)
             {
                 return NotFound();
             }
 
-            existingUser = await _userManager.FindByEmailAsync(request.Email);
-            existingUser.EmailVerificationCode = _emailVerification.VerificationEmail(request.Email);
+            user.EmailVerificationCode = _emailVerification.VerificationEmail(request.Email);
             _context.SaveChanges();
 
             return Ok();
@@ -120,7 +116,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
             if (signInResult.Succeeded)
             {
-                string token = _jwtHandler.CreateJWT(user);
+                string token = JsonConvert.SerializeObject(user);
                 return Ok(token);
             }
             if (signInResult.IsLockedOut)

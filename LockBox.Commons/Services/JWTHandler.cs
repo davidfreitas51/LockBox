@@ -10,6 +10,7 @@ namespace LockBox.Commons.Services
     public class JWTHandler
     {
         private readonly IConfiguration _configuration;
+        private readonly string Key = "WqYsL2tA6X1Yo1MlInDmF7bPdGxVHrQcJ4oZvTgKjIeU9yB3lC5fR8wS0MzNpOuYhX6WqYsL2tA6X1nDmF7bPdGxVHrQcJ4oZvTgKjIeU9yB3lC5fR8wS0MzNpOuYhX6";
         public JWTHandler(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -22,7 +23,7 @@ namespace LockBox.Commons.Services
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!));
+                _configuration.GetSection(Key).Value!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -44,7 +45,7 @@ namespace LockBox.Commons.Services
             var tokenValidationParams = new TokenValidationParameters
             {
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!)),
+                _configuration.GetSection(Key).Value!)),
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = false,
                 ValidateAudience = false,

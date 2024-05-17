@@ -1,13 +1,23 @@
 using LockBox.Commons.Models.Messages;
+using LockBox.Commons.Services;
+using LockBox.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 
 namespace LockBox.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly JWTHandler _jwtHandler;
+        public HomeController(JWTHandler jwtHandler)
+        {
+            _jwtHandler = jwtHandler;
+        }
         public IActionResult Index()
         {
             return View();
@@ -102,6 +112,26 @@ namespace LockBox.Controllers
 
             if (apiResponse.IsSuccessStatusCode)
             {
+                var tokenJSON = await apiResponse.Content.ReadAsStringAsync();
+                var user = JsonConvert.DeserializeObject<AppUser>(tokenJSON);
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, "User")
+                };
+                var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties
+                {
+                };
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
                 return RedirectToAction("Index", "Vault");
             }
             if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
