@@ -1,8 +1,10 @@
-﻿using LockBox.Commons.Models.Messages.RegisteredAccount;
+﻿using LockBox.Commons.Models;
+using LockBox.Commons.Models.Messages.RegisteredAccount;
 using LockBox.Models;
 using LockBox.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.Json;
 
 namespace LockBox.Controllers
@@ -15,6 +17,8 @@ namespace LockBox.Controllers
         {
             _sendRequestService = sendRequestService;
         }
+
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -25,13 +29,21 @@ namespace LockBox.Controllers
             };
             string requestJson = JsonSerializer.Serialize(request);
 
-            string apiUrl = "https://localhost:44394/api/GetAccounts";
+            string apiUrl = "https://localhost:44394/api/accounts/Get";
 
             var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
 
-            if (!apiResponse.IsSuccessStatusCode)
+            if (apiResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                return View();
+                List<RegisteredAccount> lista = new List<RegisteredAccount>();
+                RegisteredAccount acc = new RegisteredAccount
+                {
+                    Title = "Título teste",
+                    Password = "Senha Teste",
+                    Username = "Email teste"
+                };
+                lista.Add(acc);
+                return View(lista);
             }
 
             string responseContent = await apiResponse.Content.ReadAsStringAsync();
@@ -45,6 +57,29 @@ namespace LockBox.Controllers
             {
                 return View((object)null);
             }   
+        }
+
+        
+
+        [HttpGet]
+        public async Task<IActionResult> NewItem()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewItem([FromForm]RegisteredAccount account)
+        {
+            RARequest request = new RARequest
+            {
+                UserAccount = account
+            };
+            string requestJson = JsonSerializer.Serialize(request);
+            string apiUrl = "https://localhost:44394/api/accounts/Get";
+
+            var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
+    
+            return RedirectToAction("Index");
         }
     }
 }

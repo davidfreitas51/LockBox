@@ -20,9 +20,9 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("Register")]
-        public IActionResult Register(RARegisterRequest request)
+        public IActionResult Register(RARequest request)
         {
-            _registeredAccountRepository.RegisterAccount(request.AccToRegister);
+            _registeredAccountRepository.RegisterAccount(request.UserAccount);
             return Ok();
         }
 
@@ -42,17 +42,17 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("Update")]
-        public IActionResult Update(RAUpdateRequest request)
+        public IActionResult Update(RARequest request)
         {
-            _registeredAccountRepository.UpdateRegisteredAccount(request.AccToUpdate);
+            _registeredAccountRepository.UpdateRegisteredAccount(request.UserAccount);
             return Ok();
         }
 
 
         [HttpDelete("DeleteAccount")]
-        public IActionResult DeleteAccount(RADeleteRequest request)
+        public IActionResult DeleteAccount(RARequest request)
         {
-            _registeredAccountRepository.RegisterAccount(request.AccToDelete);
+            _registeredAccountRepository.RegisterAccount(request.UserAccount);
             return Ok();
         }
     }

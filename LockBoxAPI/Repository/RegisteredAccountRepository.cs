@@ -19,7 +19,10 @@ public class RegisteredAccountRepository : IRegisteredAccountRepository
 
     public List<RegisteredAccount> GetRegisteredAccountsByUser(AppUser user)
     {
-        return _context.RegisteredAccounts.Where(ra => ra.UserId == user.Id).ToList();
+        return _context.RegisteredAccounts
+               .Where(ra => ra.UserId == user.Id)
+               .OrderBy(ra => ra.Title) 
+               .ToList();
     }
 
     public void RegisterAccount(RegisteredAccount accToRegister)

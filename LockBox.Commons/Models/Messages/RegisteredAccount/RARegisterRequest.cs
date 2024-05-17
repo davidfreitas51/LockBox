@@ -2,8 +2,8 @@
 
 namespace LockBox.Commons.Models
 {
-    public class RARegisterRequest
+    public class RARequest
     {
-        public RegisteredAccount AccToRegister { get; set; }
+        public RegisteredAccount UserAccount { get; set; }
     }
 }

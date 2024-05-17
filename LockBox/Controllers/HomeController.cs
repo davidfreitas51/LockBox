@@ -135,7 +135,7 @@ namespace LockBox.Controllers
                     authProperties);
 
                 var cookieOptions = new CookieOptions();
-                cookieOptions.Expires = DateTime.Now.AddMinutes(5);
+                cookieOptions.Expires = DateTime.Now.AddMinutes(30);
                 Response.Cookies.Append("UserCookies", tokenJSON, cookieOptions);
                 return RedirectToAction("Index", "Vault");
             }
