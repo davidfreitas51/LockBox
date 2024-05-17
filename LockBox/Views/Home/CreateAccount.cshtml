@@ -20,24 +20,28 @@
                     <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
                     <label>Email address</label>
                 </div>
-                <div class="form-floating">
+                <div class="form-floating mb-3">
                     <input asp-for="Password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                    <label>Master password</label>
+                    <label for="floatingPassword">Master password</label>
                 </div>
-                <small>Important: Master passwords cannot be recovered if you forget it! 12 character minimum</small>
-                <div class="form-floating">
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                    <label for="floatingPassword">Confirm your password</label>
+                <small class="mb-3 d-block">Important: Master passwords cannot be recovered if you forget it! 12 character minimum</small>
+                <div class="form-floating mb-3">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="floatingConfirmPassword" placeholder="Password">
+                    <label for="floatingConfirmPassword">Confirm your password</label>
                 </div>
                 <br />
+
                 @if (ViewBag.Errors != null)
                 {
                     <div class="alert alert-danger" role="alert">
                         @ViewBag.Errors
                     </div>
                 }
-                <button class="btn btn-primary w-100 py-2" type="submit">Create</button>
+                <button class="btn btn-primary w-100 py-2" style="background-color: darkgreen" type="submit">Sign in</button>
             </form>
+            <small class="mb-3 d-block">Already have an account? <a asp-controller="Home" asp-action="Login">Login</a></small>
+
+
         </main>
     </div>
     <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

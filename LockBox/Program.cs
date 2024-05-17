@@ -11,6 +11,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         options.SlidingExpiration = true;
+        options.LoginPath = "/Home/Login";
         options.AccessDeniedPath = "/Forbidden/";
     });
 builder.Services.AddScoped<JWTHandler>();
