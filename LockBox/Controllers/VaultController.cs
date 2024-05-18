@@ -70,14 +70,18 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> NewItem([FromForm]RegisteredAccount account)
         {
-            RARequest request = new RARequest
+            AppUser user = JsonSerializer.Deserialize<AppUser>(Request.Cookies["UserCookies"]);
+            account.UserId = user.Id;
+
+            if (!ModelState.IsValid)
             {
-                UserAccount = account
-            };
-            string requestJson = JsonSerializer.Serialize(request);
+                ViewBag.Errors = "Fill correctly all the fields";
+                return View();
+            }
+    
             string apiUrl = "https://localhost:44394/api/accounts/Get";
 
-            var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
+           // var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
     
             return RedirectToAction("Index");
         }

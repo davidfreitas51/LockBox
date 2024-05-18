@@ -6,6 +6,11 @@
   justify-content: center;
 }
 
+.form-container {
+    max-width: 400px; /* Adjust the width as needed */
+    margin: auto;
+}
+
 .otp-field input {
     height: 45px;
     width: 42px;
