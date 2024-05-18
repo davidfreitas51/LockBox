@@ -1,4 +1,5 @@
-﻿using LockBox.Models;
+﻿using LockBox.Commons.Models.Messages;
+using LockBox.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,35 +18,30 @@ namespace LockBox.Commons.Services
         }
         public string CreateJWT(AppUser appUser)
         {
-            List<Claim> claims = new List<Claim>
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Key);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                new Claim(ClaimTypes.Name, appUser.Email),
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                        new Claim(ClaimTypes.Name, appUser.Id)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection(Key).Value!));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                    claims: claims,
-                    expires: DateTime.Now.AddDays(1),
-                    signingCredentials: creds
-                 );
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+            return tokenString;
         }
 
 
-        public string DecodeJwt(string token)
+        public JwtResponse DecodeJwt(string token)
         {
             var jwtHandler = new JwtSecurityTokenHandler();
-
+            var key = Encoding.UTF8.GetBytes(Key);
             var tokenValidationParams = new TokenValidationParameters
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection(Key).Value!)),
+                IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = false,
                 ValidateAudience = false,
@@ -63,16 +59,16 @@ namespace LockBox.Commons.Services
                     {
                         claimsString += $"{claim.Type}: {claim.Value}\n";
                     }
-                    return claimsString;
+                    return new JwtResponse { Claims = claimsString };
                 }
                 else
                 {
-                    return "";
+                    return new JwtResponse { Error = "Token inválido." };
                 }
             }
-            catch (SecurityTokenException)
+            catch (SecurityTokenException ex)
             {
-                return "";
+                return new JwtResponse { Error = ex.Message };
             }
         }
     }

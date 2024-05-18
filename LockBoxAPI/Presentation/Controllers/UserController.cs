@@ -1,11 +1,10 @@
 ﻿using LockBox.Commons.Models.Messages;
 using LockBox.Commons.Models.Messages.User;
+using LockBox.Commons.Services;
 using LockBox.Models;
-using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -116,8 +115,8 @@ namespace LockBoxAPI.Presentation.Controllers
 
             if (signInResult.Succeeded)
             {
-                string token = JsonConvert.SerializeObject(user);
-                return Ok(token);
+                var token = _jwtHandler.CreateJWT(user);
+                return Ok(new { Token = token });
             }
             if (signInResult.IsLockedOut)
             {

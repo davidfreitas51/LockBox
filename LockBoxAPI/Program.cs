@@ -1,5 +1,5 @@
+using LockBox.Commons.Services;
 using LockBox.Models;
-using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository;
 using LockBoxAPI.Repository.Contracts;
 using LockBoxAPI.Repository.Database;

@@ -105,7 +105,7 @@ namespace LockBox.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm]UserLoginRequest request)
+        public async Task<IActionResult> Login([FromForm] UserLoginRequest request)
         {
             string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/Login";
@@ -115,48 +115,62 @@ namespace LockBox.Controllers
             if (apiResponse.IsSuccessStatusCode)
             {
                 var tokenJSON = await apiResponse.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<AppUser>(tokenJSON);
+                var jwtResponse = _jwtHandler.DecodeJwt(tokenJSON);
 
-                var claims = new List<Claim>
+                if (string.IsNullOrEmpty(jwtResponse.Error))
                 {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, "User")
-                };
-                var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, jwtResponse.Claims),
+                        new Claim(ClaimTypes.Role, "User")
+                    };
+                    var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                var authProperties = new AuthenticationProperties
+                    var authProperties = new AuthenticationProperties
+                    {
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity),
+                        authProperties);
+
+                    var cookieOptions = new CookieOptions();
+                    cookieOptions.Expires = DateTime.Now.AddMinutes(30);
+                    cookieOptions.HttpOnly = true; // Faz o cookie ser HttpOnly
+                    cookieOptions.Secure = true; // Faz o cookie ser seguro
+                    Response.Cookies.Append("UserCookies", tokenJSON, cookieOptions);
+                    return RedirectToAction("Index", "Vault");
+                }
+                else
                 {
-                };
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-
-                var cookieOptions = new CookieOptions();
-                cookieOptions.Expires = DateTime.Now.AddMinutes(30);
-                Response.Cookies.Append("UserCookies", tokenJSON, cookieOptions);
-                return RedirectToAction("Index", "Vault");
+                    ViewBag.Errors = jwtResponse.Error;
+                    return View(request);
+                }
             }
-            if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
+            else if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
             {
                 TempData["Email"] = request.Email;
                 return RedirectToAction("EmailVerification");
             }
-            if (apiResponse.StatusCode == HttpStatusCode.BadRequest)
+            else if (apiResponse.StatusCode == HttpStatusCode.BadRequest)
             {
                 ViewBag.Errors = "Invalid LogIn. Check your credentials";
                 return View(request);
             }
-            if (apiResponse.StatusCode == HttpStatusCode.TooManyRequests)
+            else if (apiResponse.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 ViewBag.Errors = "Too many requests. Try again later";
                 return View(request);
             }
-            ViewBag.Errors = GetFirstError(apiResponse).Result;
-            return View(request);
+            else
+            {
+                ViewBag.Errors = GetFirstError(apiResponse).Result;
+                return View(request);
+            }
         }
+
 
 
 
