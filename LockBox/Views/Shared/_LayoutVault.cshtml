@@ -15,40 +15,59 @@
     <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Meta Tags -->
 </head>
-<div class="sidebar" style="background-color: darkgreen; color: white; width: 250px; height: 100vh; position: fixed; top: 0; left: 0; padding: 20px">
-    <a href="/" style="padding-left: 15px; font-size: 2em; font-weight: bold; display: block; color: inherit; text-decoration: none;">LockBox</a>
-
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li>
-            <a href="/Vault" class="nav-link text-white">
-                Vault
-            </a>
-        </li>
-        <li>
-            <a asp-controller="Vault" asp-action="NewItem" class="nav-link text-white">
-                New item
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                Products
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                Customers
-            </a>
-        </li>
-    </ul>
-
-</div>
-
 <body>
-    <div class="container" style="max-width: 600px; margin: 50px auto; padding: 20px;">
-        @RenderBody()
+    <div class="d-flex">
+        <div class="sidebar" style="background-color: darkgreen; color: white; width: 250px; height: 100vh; position: fixed; top: 0; left: 0; padding: 20px;">
+            <a href="/" style="padding-left: 15px; font-size: 2em; font-weight: bold; display: block; color: inherit; text-decoration: none;">LockBox</a>
+
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="/Vault" class="nav-link text-white">
+                        Vault
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Vault" asp-action="NewItem" class="nav-link text-white">
+                        New item
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        Customers
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content" style="flex-grow: 1; padding: 20px; margin-left: 250px; margin-right: 250px;">
+            @RenderBody()
+        </div>
     </div>
+
+    <div class="sidebar" style="background-color: transparent; width: 250px; height: 100vh; position: fixed; top: 0; right: 0; padding: 20px;">
+        <!-- Add your right sidebar content here -->
+        <h3>Right Sidebar</h3>
+        <p>Additional content or navigation links.</p>
+        @if (TempData["MSG_S"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["MSG_S"]
+            </div>
+        }
+        @if (TempData["MSG_E"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["MSG_E"]
+            </div>
+        }
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </html>

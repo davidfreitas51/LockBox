@@ -7,44 +7,43 @@
 <body class="bg-body-tertiary">
     <main>
         <div class="d-flex">
-           
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if(Model != null)
-                        {
-                            int a = 1;
-                            @foreach (RegisteredAccount account in Model)
-                            {
-                                <tr>
-                                    <th>@a</th>
-                                    <td>@account.Title</td>
-                                    <td>@account.Username</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">C</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">E</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">D</button>
-                                    </td>
-                                </tr>
-                                a++;
-                            }
-                        }
-                        else
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        int a = 1;
+                        @foreach (RegisteredAccount account in Model)
                         {
                             <tr>
-                                <td colspan="3">No passwords saved.</td>
-                            </tr>   
+                                <th>@a</th>
+                                <td>@account.Title</td>
+                                <td>@account.Username</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">C</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">E</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">D</button>
+                                </td>
+                            </tr>
+                            a++;
                         }
-
-                    </tbody>
-                </table>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">No passwords saved.</td>
+                        </tr>
+                    }
+                    
+                </tbody>
+            </table>
         </div>
     </main>
 </body>

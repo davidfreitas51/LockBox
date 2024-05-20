@@ -2,13 +2,7 @@
 @{
     Layout = "_LayoutVault";
 }
-<body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+
 <body>
     <div class="form-container">
         <form asp-controller="Vault" asp-action="NewItem" method="post">
@@ -19,16 +13,13 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Username/E-mail</label>
-                <input asp-for="Username" type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                <input asp-for="Username" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
             </div>
             <div class="form-group">
                 <label for="exampleInputPassword1">Password</label>
-                <input asp-for="Username" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
-</body>
-</html>
-
 </body>

@@ -1,4 +1,5 @@
 ﻿using LockBox.Commons.Models;
+using LockBox.Commons.Models.Messages.RegisteredAccount;
 using LockBox.Models;
 using LockBox.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -24,35 +25,31 @@ namespace LockBox.Controllers
             string token = Request.Cookies["UserCookies"];
             string apiUrl = "https://localhost:44394/api/accounts/Get";
 
-            var apiResponse = await _sendRequestService.PostRequest(token, apiUrl);
+            RAGetByUserRequest request = new RAGetByUserRequest
+            {
+                Token = token
+            };
+            string requestJson = JsonSerializer.Serialize(request);
+
+            var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
 
             if (apiResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                List<RegisteredAccount> lista = new List<RegisteredAccount>();
-                RegisteredAccount acc = new RegisteredAccount
-                {
-                    Title = "Título teste",
-                    Password = "Senha Teste",
-                    Username = "Email teste"
-                };
-                lista.Add(acc);
-                return View(lista);
+                return View();
             }
 
-            string responseContent = await apiResponse.Content.ReadAsStringAsync();
-            List<RegisteredAccount> accountsList = JsonSerializer.Deserialize<List<RegisteredAccount>>(responseContent);
-
-            if (accountsList != null && accountsList.Count > 0)
+            if (apiResponse.StatusCode == HttpStatusCode.OK)
             {
+                string responseContent = await apiResponse.Content.ReadAsStringAsync();
+                List<RegisteredAccount> accountsList = JsonSerializer.Deserialize<List<RegisteredAccount>>(responseContent);
                 return View(accountsList);
             }
-            else
-            {
-                return View((object)null);
-            }   
+            TempData["MSG_E"] = "An error occurred";
+            return View((object)null);
         }
 
-        
+
+
 
         [HttpGet]
         public async Task<IActionResult> NewItem()
@@ -63,10 +60,11 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> NewItem([FromForm]RegisteredAccount account)
         {
+            account.UserId = "0";
             ModelState.Remove("UserId");
             if (!ModelState.IsValid)
             {
-                ViewBag.Error = "An error occurred";
+                TempData["MSG_E"] = "An error occurred";
                 return View();
             }
 
@@ -84,10 +82,10 @@ namespace LockBox.Controllers
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                ViewBag.Success = "Account successfully registered";
+                TempData["MSG_S"] = "Account successfully registered";
                 return RedirectToAction("Index");
             }
-            ViewBag.Error = "An error occurred";
+            TempData["MSG_E"] = "An error occurred";
             return RedirectToAction("Index");
         }
     }

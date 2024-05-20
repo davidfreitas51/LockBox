@@ -34,7 +34,6 @@ namespace LockBoxAPI.Presentation.Controllers
             if (existingUser != null)
             {
                 return BadRequest("User already exists");
-                string a;
             }
 
             var user = new AppUser

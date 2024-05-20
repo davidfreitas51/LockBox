@@ -1,19 +1,16 @@
-﻿using Azure.Core;
-using LockBox.Commons.Models;
+﻿using LockBox.Commons.Models;
 using LockBox.Commons.Models.Messages.RegisteredAccount;
 using LockBox.Commons.Services;
 using LockBox.Models;
 using LockBoxAPI.Repository.Contracts;
 using LockBoxAPI.Repository.Database;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AccountsController : ControllerBase
     {
         public readonly IRegisteredAccountRepository _registeredAccountRepository;
@@ -43,9 +40,9 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("Get")]
-        public IActionResult Get(string token)
+        public IActionResult Get(RAGetByUserRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(token)).FirstOrDefault();
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
             {
                 return BadRequest();
@@ -56,7 +53,8 @@ namespace LockBoxAPI.Presentation.Controllers
             {
                 return NotFound();
             }
-            return Ok(registeredAccount);
+            string jsonAccounts = JsonSerializer.Serialize(registeredAccount);
+            return Ok(jsonAccounts);
         }
 
 
