@@ -37,10 +37,16 @@ public class RegisteredAccountRepository : IRegisteredAccountRepository
         _context.SaveChanges();
     }
 
-    public void UpdateRegisteredAccount(RegisteredAccount accToUpdate)
+    public void UpdateRegisteredAccount(RegisteredAccount updatedAcc)
     {
 
-        _context.RegisteredAccounts.Update(accToUpdate);
+        var oldAcc = _context.RegisteredAccounts.Where(acc => acc.Id == updatedAcc.Id).FirstOrDefault();
+        if (oldAcc != null)
+        {
+            oldAcc.Title = updatedAcc.Title;
+            oldAcc.Username = updatedAcc.Username;
+            oldAcc.Password = updatedAcc.Password;
+        }
         _context.SaveChanges();
 
     }

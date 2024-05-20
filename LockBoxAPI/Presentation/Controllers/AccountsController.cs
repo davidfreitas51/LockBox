@@ -84,6 +84,7 @@ namespace LockBoxAPI.Presentation.Controllers
             {
                 return BadRequest();
             }
+            _registeredAccountRepository.UpdateRegisteredAccount(request.UserAccount);
             return Ok();
         }
 

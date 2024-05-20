@@ -127,7 +127,7 @@ namespace LockBox.Controllers
             }
 
             string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/Register";
+            string apiUrl = "https://localhost:44394/api/accounts/Update";
 
             RARequest request = new RARequest
             {
