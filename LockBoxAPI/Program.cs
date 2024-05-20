@@ -1,5 +1,5 @@
+using LockBox.Commons.Services;
 using LockBox.Models;
-using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository;
 using LockBoxAPI.Repository.Contracts;
 using LockBoxAPI.Repository.Database;
@@ -28,17 +28,17 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRegisteredAccountRepository, RegisteredAccountRepository>();
 builder.Services.AddScoped<VerificationEmailService>();
-builder.Services.AddScoped<JWTHandler>();
+builder.Services.AddScoped<SecurityHandler>();
 
 builder.Services.AddDbContext<LockBoxContext>(opt =>
-opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LockBoxDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
+    opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LockBoxDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
+// Adiciona Identity
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<LockBoxContext>()
+    .AddDefaultTokenProviders();
 
-builder.Services.AddAuthorization();
-
-builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<LockBoxContext>();
-
-// TODO: Voltar a configuração de senha segura
+// Configura opções de senha (você pode ajustar conforme necessário)
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;
@@ -48,6 +48,19 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
     options.Password.RequiredLength = 6;
 });
+
+// Configura autenticação com cookies
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = ".AspNetCore.Identity.Application";
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+});
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -60,6 +73,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); // Adicione esta linha para garantir que a autenticação seja usada
 app.UseAuthorization();
 
 app.MapControllers();

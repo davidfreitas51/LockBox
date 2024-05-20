@@ -1,11 +1,10 @@
 ﻿using LockBox.Commons.Models.Messages;
 using LockBox.Commons.Models.Messages.User;
+using LockBox.Commons.Services;
 using LockBox.Models;
-using LockBoxAPI.Application.Services;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -14,18 +13,18 @@ namespace LockBoxAPI.Presentation.Controllers
     public class UserController : ControllerBase
     {
         private readonly LockBoxContext _context;
-        private readonly JWTHandler _jwtHandler;
+        private readonly SecurityHandler _securityHandler;
         private readonly VerificationEmailService _emailVerification;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public UserController(LockBoxContext context, VerificationEmailService emailVerification, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, JWTHandler jwtHandler)
+        public UserController(LockBoxContext context, VerificationEmailService emailVerification, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, SecurityHandler securityHandler)
         {
             _context = context;
             _emailVerification = emailVerification;
             _userManager = userManager;
             _signInManager = signInManager;
-            _jwtHandler = jwtHandler;
+            _securityHandler = securityHandler;
         }
 
         [HttpPost("Register")]
@@ -116,8 +115,13 @@ namespace LockBoxAPI.Presentation.Controllers
 
             if (signInResult.Succeeded)
             {
-                string token = JsonConvert.SerializeObject(user);
-                return Ok(token);
+                string jwtToken = _securityHandler.CreateToken(user);
+                string hashedJwt = _securityHandler.HashString(jwtToken);
+
+                user.JwtHash = hashedJwt;
+                _context.SaveChanges();
+
+                return Ok(jwtToken);
             }
             if (signInResult.IsLockedOut)
             {
@@ -125,5 +129,7 @@ namespace LockBoxAPI.Presentation.Controllers
             }
             return BadRequest("Invalid login attempt.");
         }
+
+        
     }
 }

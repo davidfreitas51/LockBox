@@ -9,14 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 
 namespace LockBox.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly JWTHandler _jwtHandler;
+        private readonly SecurityHandler _jwtHandler;
         private readonly SendRequestService _sendRequestService;
-        public HomeController(JWTHandler jwtHandler, SendRequestService sendRequestService)
+        public HomeController(SecurityHandler jwtHandler, SendRequestService sendRequestService)
         {
             _jwtHandler = jwtHandler;
             _sendRequestService = sendRequestService;
@@ -114,29 +115,28 @@ namespace LockBox.Controllers
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                var tokenJSON = await apiResponse.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<AppUser>(tokenJSON);
+                var token = await apiResponse.Content.ReadAsStringAsync();
 
+                
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, "User")
-                };
+                    {
+                        new Claim(ClaimTypes.Role, "User")
+                    };
                 var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                var authProperties = new AuthenticationProperties
-                {
-                };
+                var authProperties = new AuthenticationProperties { };
 
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                var cookieOptions = new CookieOptions();
-                cookieOptions.Expires = DateTime.Now.AddMinutes(30);
-                Response.Cookies.Append("UserCookies", tokenJSON, cookieOptions);
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddMinutes(30)
+                };
+                Response.Cookies.Append("UserCookies", token, cookieOptions);
                 return RedirectToAction("Index", "Vault");
             }
             if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)

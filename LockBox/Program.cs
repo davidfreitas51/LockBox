@@ -15,7 +15,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Home/Login";
         options.AccessDeniedPath = "/Forbidden/";
     });
-builder.Services.AddScoped<JWTHandler>();
+builder.Services.AddScoped<SecurityHandler>();
 builder.Services.AddScoped<SendRequestService>();
 
 var app = builder.Build();
