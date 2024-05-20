@@ -1,4 +1,4 @@
-﻿using LockBox.Commons.Models.Messages.RegisteredAccount;
+﻿using LockBox.Commons.Models;
 using LockBox.Models;
 using LockBox.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +22,6 @@ namespace LockBox.Controllers
         public async Task<IActionResult> Index()
         {
             string token = Request.Cookies["UserCookies"];
-
             string apiUrl = "https://localhost:44394/api/accounts/Get";
 
             var apiResponse = await _sendRequestService.PostRequest(token, apiUrl);
@@ -64,19 +63,31 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> NewItem([FromForm]RegisteredAccount account)
         {
-            AppUser user = JsonSerializer.Deserialize<AppUser>(Request.Cookies["UserCookies"]);
-            account.UserId = user.Id;
-
+            ModelState.Remove("UserId");
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = "Fill correctly all the fields";
+                ViewBag.Error = "An error occurred";
                 return View();
             }
-    
-            string apiUrl = "https://localhost:44394/api/accounts/Get";
 
-           // var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
-    
+            string token = Request.Cookies["UserCookies"];
+            string apiUrl = "https://localhost:44394/api/accounts/Register";
+
+            RARequest request = new RARequest
+            {
+                Token = token,
+                UserAccount = account,
+            };
+            var json = JsonSerializer.Serialize(request);
+
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                ViewBag.Success = "Account successfully registered";
+                return RedirectToAction("Index");
+            }
+            ViewBag.Error = "An error occurred";
             return RedirectToAction("Index");
         }
     }

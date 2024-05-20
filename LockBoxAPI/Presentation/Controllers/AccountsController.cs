@@ -1,4 +1,5 @@
-﻿using LockBox.Commons.Models;
+﻿using Azure.Core;
+using LockBox.Commons.Models;
 using LockBox.Commons.Models.Messages.RegisteredAccount;
 using LockBox.Commons.Services;
 using LockBox.Models;
@@ -6,6 +7,7 @@ using LockBoxAPI.Repository.Contracts;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -28,22 +30,25 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("Register")]
         public IActionResult Register(RARequest request)
         {
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            
+            request.UserAccount.UserId = user.Id;
             _registeredAccountRepository.RegisterAccount(request.UserAccount);
             return Ok();
         }
 
 
         [HttpPost("Get")]
-        public IActionResult Get(RAGetByUserRequest request)
+        public IActionResult Get(string token)
         {
-            var user = _context.Users.Where(u => u.Email == request.AppUser.Email).FirstOrDefault();
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(token)).FirstOrDefault();
             if (user == null)
             {
                 return BadRequest();
-            }
-            if (!_securityHandler.CompareHash(request.Token, user.JwtHash))
-            {
-                return Forbid();
             }
 
             List<RegisteredAccount> registeredAccount = _registeredAccountRepository.GetRegisteredAccountsByUser(user); 
@@ -56,8 +61,13 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("Update")]
-        public IActionResult Update()
+        public IActionResult Update(RARequest request)
         {
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest();
+            }
             return Ok();
         }
 
@@ -65,6 +75,11 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpDelete("DeleteAccount")]
         public IActionResult DeleteAccount(RARequest request)
         {
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest();
+            }
             _registeredAccountRepository.RegisterAccount(request.UserAccount);
             return Ok();
         }
