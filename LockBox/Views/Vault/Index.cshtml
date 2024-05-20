@@ -20,7 +20,7 @@
                     @if (Model != null)
                     {
                         int a = 1;
-                        @foreach (RegisteredAccount account in Model)
+                        foreach (RegisteredAccount account in Model)
                         {
                             <tr>
                                 <th>@a</th>
@@ -29,7 +29,7 @@
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">C</button>
                                     <a asp-action="UpdateItem" asp-controller="Vault" asp-route-id="@account.Id" type="button" class="btn btn-sm btn-outline-secondary">E</a>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">D</button>
+                                    <button onclick="confirmDelete('@account.Id')" type="button" class="btn btn-sm btn-outline-secondary">D</button>
                                 </td>
                             </tr>
                             a++;
@@ -47,4 +47,13 @@
         </div>
     </main>
 </body>
+<script>
+    function confirmDelete(id) {
+        if (confirm("Are you sure you want to delete this item?")) {
+            window.location.href = '@Url.Action("DeleteItem", "Vault")' + "?id=" + id;
+        } else {
+            return false;
+        }
+    }
+</script>
 </html>

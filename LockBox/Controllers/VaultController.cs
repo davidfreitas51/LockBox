@@ -146,5 +146,29 @@ namespace LockBox.Controllers
             TempData["MSG_E"] = "An error occurred";
             return RedirectToAction("Index");
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteItem([FromQuery]string id)
+        {
+            string token = Request.Cookies["UserCookies"];
+            string apiUrl = "https://localhost:44394/api/accounts/DeleteAccount";
+
+            RAGetByIdRequest request = new RAGetByIdRequest
+            {
+                Token = token,
+                RAId = id,
+            };
+            var json = JsonSerializer.Serialize(request);
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                TempData["MSG_S"] = "Account successfully deleted";
+                return RedirectToAction("Index");
+            }
+            TempData["MSG_E"] = "An error occurred";
+            return RedirectToAction("Index");
+        }
     }
 }

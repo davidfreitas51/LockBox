@@ -1,6 +1,4 @@
-﻿using LockBox.Models;
-
-namespace LockBox.Commons.Models.Messages.RegisteredAccount
+﻿namespace LockBox.Commons.Models.Messages.RegisteredAccount
 {
     public class RAGetByUserRequest
     {

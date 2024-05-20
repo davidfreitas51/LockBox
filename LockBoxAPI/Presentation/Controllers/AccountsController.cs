@@ -89,15 +89,15 @@ namespace LockBoxAPI.Presentation.Controllers
         }
 
 
-        [HttpDelete("DeleteAccount")]
-        public IActionResult DeleteAccount(RARequest request)
+        [HttpPost("DeleteAccount")]
+        public IActionResult DeleteAccount(RAGetByIdRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
             {
                 return BadRequest();
             }
-            _registeredAccountRepository.RegisterAccount(request.UserAccount);
+            _registeredAccountRepository.DeleteRegisteredAccount(request.RAId);
             return Ok();
         }
     }

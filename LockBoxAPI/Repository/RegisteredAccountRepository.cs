@@ -11,9 +11,10 @@ public class RegisteredAccountRepository : IRegisteredAccountRepository
         _context = context;
     }
 
-    public void DeleteRegisteredAccount(RegisteredAccount accToDelete)
+    public void DeleteRegisteredAccount(string RAId)
     {
-        _context.Remove(accToDelete);
+        var acc = _context.RegisteredAccounts.Where(r => r.Id.ToString() == RAId).FirstOrDefault();
+        _context.Remove(acc);
         _context.SaveChanges();
     }
 
