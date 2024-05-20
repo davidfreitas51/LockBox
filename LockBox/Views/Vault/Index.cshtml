@@ -28,7 +28,7 @@
                                 <td>@account.Username</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">C</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">E</button>
+                                    <a asp-action="UpdateItem" asp-controller="Vault" asp-route-id="@account.Id" type="button" class="btn btn-sm btn-outline-secondary">E</a>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">D</button>
                                 </td>
                             </tr>

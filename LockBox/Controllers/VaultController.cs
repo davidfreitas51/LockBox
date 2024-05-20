@@ -88,5 +88,63 @@ namespace LockBox.Controllers
             TempData["MSG_E"] = "An error occurred";
             return RedirectToAction("Index");
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateItem(string id)
+        {
+            string token = Request.Cookies["UserCookies"];
+            string apiUrl = "https://localhost:44394/api/accounts/GetById";
+
+            RAGetByIdRequest request = new RAGetByIdRequest
+            {
+                Token = token,
+                RAId = id,
+            };
+            var json = JsonSerializer.Serialize(request);
+
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                string responseContent = await apiResponse.Content.ReadAsStringAsync();
+                RegisteredAccount accountsList = JsonSerializer.Deserialize<RegisteredAccount>(responseContent);
+                return View(accountsList);
+            }
+            TempData["MSG_E"] = "An error occurred";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateItem([FromForm] RegisteredAccount account)
+        {
+            account.UserId = "0";
+            ModelState.Remove("UserId");
+            if (!ModelState.IsValid)
+            {
+                TempData["MSG_E"] = "An error occurred";
+                return View();
+            }
+
+            string token = Request.Cookies["UserCookies"];
+            string apiUrl = "https://localhost:44394/api/accounts/Register";
+
+            RARequest request = new RARequest
+            {
+                Token = token,
+                UserAccount = account,
+            };
+            var json = JsonSerializer.Serialize(request);
+
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                TempData["MSG_S"] = "Account successfully updated";
+                return RedirectToAction("Index");
+            }
+            TempData["MSG_E"] = "An error occurred";
+            return RedirectToAction("Index");
+        }
     }
 }

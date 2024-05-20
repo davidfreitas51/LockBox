@@ -24,6 +24,12 @@ public class RegisteredAccountRepository : IRegisteredAccountRepository
                .OrderBy(ra => ra.Title) 
                .ToList();
     }
+    public RegisteredAccount GetRegisteredAccountById(string id)
+    {
+        return _context.RegisteredAccounts
+               .Where(ra => ra.Id.ToString() == id)
+               .FirstOrDefault();
+    }
 
     public void RegisterAccount(RegisteredAccount accToRegister)
     {

@@ -58,6 +58,24 @@ namespace LockBoxAPI.Presentation.Controllers
         }
 
 
+        [HttpPost("GetById")]
+        public IActionResult GetById(RAGetByIdRequest request)
+        {
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            RegisteredAccount registeredAccount = _registeredAccountRepository.GetRegisteredAccountById(request.RAId);
+            if (registeredAccount == null)
+            {
+                return NotFound();
+            }
+            string jsonAccounts = JsonSerializer.Serialize(registeredAccount);
+            return Ok(jsonAccounts);
+        }
+
         [HttpPost("Update")]
         public IActionResult Update(RARequest request)
         {
