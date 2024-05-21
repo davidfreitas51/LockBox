@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddScoped<SecurityHandler>();
 builder.Services.AddScoped<SendRequestService>();
+builder.Services.AddScoped<SecurityHandler>();
 
 var app = builder.Build();
 

@@ -17,8 +17,10 @@ namespace LockBox.Controllers
     {
         private readonly SecurityHandler _jwtHandler;
         private readonly SendRequestService _sendRequestService;
-        public HomeController(SecurityHandler jwtHandler, SendRequestService sendRequestService)
+        private readonly SecurityHandler _securityHandler;
+        public HomeController(SecurityHandler jwtHandler, SendRequestService sendRequestService, SecurityHandler securityHandler)
         {
+            _securityHandler = securityHandler;
             _jwtHandler = jwtHandler;
             _sendRequestService = sendRequestService;
         }
@@ -156,13 +158,13 @@ namespace LockBox.Controllers
             return View(request);
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> LoginAsRecruiter()
         {
             UserLoginRequest userRequest = new UserLoginRequest
             {
                 Email = "wageyot233@javnoi.com",
-                Password = "zTccI&U(E+[IyOURm1'~"
+                Password = _securityHandler.DecryptAES("yFADLsEJ+vJ+ikdliB9CcZa8O+6Ya/Z2NtyjLGHkdoE=")
             };
             string json = JsonConvert.SerializeObject(userRequest);
             string apiUrl = "https://localhost:44394/api/User/Login";
