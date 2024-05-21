@@ -61,16 +61,19 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        var password = '@TempData["MSG_Pass"]';
-        if (password) {
-            const tempInput = document.createElement('input');
-            tempInput.value = password;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-        }
+        setTimeout(function () {
+            var password = '@TempData["MSG_Pass"]';
+            if (password) {
+                const tempInput = document.createElement('input');
+                tempInput.value = password;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+            }
+        }, 100);
     });
+
 </script>
 
 </html>

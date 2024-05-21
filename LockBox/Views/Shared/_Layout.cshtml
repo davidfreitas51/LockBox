@@ -98,5 +98,20 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                var password = '@TempData["MSG_Pass"]';
+                if (password) {
+                    const tempInput = document.createElement('input');
+                    tempInput.value = password;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                }
+            }, 100);
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

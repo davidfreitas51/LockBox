@@ -36,13 +36,11 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromForm]UserRegisterRequest userRegisterRequest)
         {
-            /* TODO: Remover comentários
             if (userRegisterRequest.Password.Length < 12)
             {
                 ViewBag.Errors = "The password needs at least 12 characters";
                 return View(userRegisterRequest);
             }
-            */
             if (!ModelState.IsValid)
             {
                 ViewBag.Errors = GetModelStateErrors();
@@ -146,7 +144,7 @@ namespace LockBox.Controllers
             }
             if (apiResponse.StatusCode == HttpStatusCode.BadRequest)
             {
-                ViewBag.Errors = "Invalid LogIn. Check your credentials";
+                ViewBag.Errors = "Invalid Login. Check your credentials";
                 return View(request);
             }
             if (apiResponse.StatusCode == HttpStatusCode.TooManyRequests)
@@ -158,7 +156,58 @@ namespace LockBox.Controllers
             return View(request);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> LoginAsRecruiter()
+        {
+            UserLoginRequest userRequest = new UserLoginRequest
+            {
+                Email = "wageyot233@javnoi.com",
+                Password = "zTccI&U(E+[IyOURm1'~"
+            };
+            string json = JsonConvert.SerializeObject(userRequest);
+            string apiUrl = "https://localhost:44394/api/User/Login";
 
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var token = await apiResponse.Content.ReadAsStringAsync();
+
+
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Role, "User")
+                    };
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties { };
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddMinutes(30)
+                };
+                Response.Cookies.Append("UserCookies", token, cookieOptions);
+                return RedirectToAction("Index", "Vault");
+            }
+            if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                TempData["Email"] = userRequest.Email;
+                return RedirectToAction("EmailVerification");
+            }
+            if (apiResponse.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                ViewBag.Errors = "Too many requests. Try again later";
+                return View(userRequest);
+            }
+            ViewBag.Errors = GetFirstError(apiResponse).Result;
+            return View(userRequest);
+        }
 
         private string GetModelStateErrors()
         {
