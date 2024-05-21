@@ -29,8 +29,12 @@ The project follows SOLID principles and Clean Code, ensuring easy maintenance a
 
 ## Installation
 
-In your Visual Studio or preferred IDE, pull the repository. After that, run the "LockBox.API" project, and then the "LockBox".
+1. In your Visual Studio or preferred IDE, pull the repository. 
+2. Run the "LockBox.API" project.
+3. Run the "LockBox" project.
 
+You can use Visual Studio "Multiple Startup Projects" to do it
+If any doubts, check the demonstration video 
 
 ## Usage
 
