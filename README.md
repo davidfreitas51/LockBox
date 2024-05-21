@@ -26,9 +26,11 @@ Some of the technologies adopted in the whole project are:
 
 The project follows SOLID principles and Clean Code, ensuring easy maintenance and scalability if needed.
 
+
 ## Installation
 
 In your Visual Studio or preferred IDE, pull the repository. After that, run the "LockBox.API" project, and then the "LockBox".
+
 
 ## Usage
 
@@ -41,6 +43,7 @@ LockBox simplifies the management of passwords by providing a secure platform fo
 3. **Managing Passwords**: Once in, users can create, view, edit, and delete their saved credentials as needed. The interface offers intuitive controls for organizing passwords and quickly locating specific entries.
 
 4. **Enhanced Security**: LockBox employs various security measures to safeguard user data. This includes JWT tokens for session management, password hashing to protect user credentials, and AES encryption for encrypting stored passwords. Additionally, filters are implemented to enhance security and streamline data retrieval.
+
 
 ## Demonstration
 
