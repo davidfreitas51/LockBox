@@ -1,9 +1,10 @@
-﻿using System.Text;
+﻿using LockBox.Services.Interfaces;
+using System.Text;
 using System.Text.Json;
 
 namespace LockBox.Services
 {
-    public class SendRequestService
+    public class SendRequestService : ISendRequestService
     {
         public async Task<HttpResponseMessage> PostRequest<T>(T obj, string apiUrl)
         {

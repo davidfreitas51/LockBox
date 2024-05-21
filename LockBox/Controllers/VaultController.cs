@@ -2,6 +2,7 @@
 using LockBox.Commons.Models.Messages.RegisteredAccount;
 using LockBox.Models;
 using LockBox.Services;
+using LockBox.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -12,8 +13,8 @@ namespace LockBox.Controllers
     [Authorize]
     public class VaultController : Controller
     {
-        private readonly SendRequestService _sendRequestService;
-        public VaultController(SendRequestService sendRequestService)
+        private readonly ISendRequestService _sendRequestService;
+        public VaultController(ISendRequestService sendRequestService)
         {
             _sendRequestService = sendRequestService;
         }

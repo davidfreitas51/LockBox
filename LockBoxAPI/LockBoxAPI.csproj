@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\**" />
     <Compile Remove="Domain\**" />
-    <Content Remove="Application\**" />
     <Content Remove="Domain\**" />
-    <EmbeddedResource Remove="Application\**" />
     <EmbeddedResource Remove="Domain\**" />
-    <None Remove="Application\**" />
     <None Remove="Domain\**" />
   </ItemGroup>
 

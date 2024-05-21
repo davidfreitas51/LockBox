@@ -1,6 +1,6 @@
 ﻿using LockBox.Commons.Models;
 using LockBox.Commons.Models.Messages.RegisteredAccount;
-using LockBox.Commons.Services;
+using LockBox.Commons.Services.Interfaces;
 using LockBox.Models;
 using LockBoxAPI.Repository.Contracts;
 using LockBoxAPI.Repository.Database;
@@ -14,9 +14,9 @@ namespace LockBoxAPI.Presentation.Controllers
     public class AccountsController : ControllerBase
     {
         public readonly IRegisteredAccountRepository _registeredAccountRepository;
-        public readonly SecurityHandler _securityHandler;
+        public readonly ISecurityHandler _securityHandler;
         public readonly LockBoxContext _context;
-        public AccountsController(IRegisteredAccountRepository registeredAccountRepository, SecurityHandler securityHandler, LockBoxContext context)
+        public AccountsController(IRegisteredAccountRepository registeredAccountRepository, ISecurityHandler securityHandler, LockBoxContext context)
         {
             _registeredAccountRepository = registeredAccountRepository;
             _securityHandler = securityHandler;
@@ -27,7 +27,7 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("Register")]
         public IActionResult Register(RATokenAccountRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            var user = AuthenticateUser(request.Token);
             if (user == null)
             {
                 return BadRequest();
@@ -43,22 +43,22 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("Get")]
         public IActionResult Get(RATokenRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            var user = AuthenticateUser(request.Token);
             if (user == null)
             {
                 return BadRequest();
             }
 
-            List<RegisteredAccount> registeredAccount = _registeredAccountRepository.GetRegisteredAccountsByUser(user); 
+            var registeredAccount = _registeredAccountRepository.GetRegisteredAccountsByUser(user); 
             if (registeredAccount == null)
             {
                 return NotFound();
             }
-            foreach (RegisteredAccount acc in registeredAccount)
+            foreach (var acc in registeredAccount)
             {
                 acc.Password = _securityHandler.DecryptAES(acc.Password);
             }
-            string jsonAccounts = JsonSerializer.Serialize(registeredAccount);
+            var jsonAccounts = JsonSerializer.Serialize(registeredAccount);
             return Ok(jsonAccounts);
         }
 
@@ -66,26 +66,26 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("GetById")]
         public IActionResult GetById(RATokenAccIdRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            var user = AuthenticateUser(request.Token);
             if (user == null)
             {
                 return BadRequest();
             }
 
-            RegisteredAccount registeredAccount = _registeredAccountRepository.GetRegisteredAccountById(request.RAId);
+            var registeredAccount = _registeredAccountRepository.GetRegisteredAccountById(request.RAId);
             if (registeredAccount == null)
             {
                 return NotFound();
             }
             registeredAccount.Password = _securityHandler.DecryptAES(registeredAccount.Password);
-            string jsonAccounts = JsonSerializer.Serialize(registeredAccount);
+            var jsonAccounts = JsonSerializer.Serialize(registeredAccount);
             return Ok(jsonAccounts);
         }
 
         [HttpPost("Update")]
         public IActionResult Update(RATokenAccountRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            var user = AuthenticateUser(request.Token);
             if (user == null)
             {
                 return BadRequest();
@@ -99,7 +99,7 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("DeleteAccount")]
         public IActionResult DeleteAccount(RATokenAccIdRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            var user = AuthenticateUser(request.Token);
             if (user == null)
             {
                 return BadRequest();
@@ -112,14 +112,18 @@ namespace LockBoxAPI.Presentation.Controllers
         [HttpPost("CopyPassword")]
         public IActionResult CopyPassword(RATokenAccIdRequest request)
         {
-            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            var user = AuthenticateUser(request.Token);
             if (user == null)
             {
                 return BadRequest();
             }
-            string passwordAES = _registeredAccountRepository.CopyPassword(request.RAId);
-            string password = _securityHandler.DecryptAES(passwordAES);
+            var passwordAES = _registeredAccountRepository.CopyPassword(request.RAId);
+            var password = _securityHandler.DecryptAES(passwordAES);
             return Ok(password);
+        }
+        private AppUser AuthenticateUser(string token)
+        {
+            return _context.Users.FirstOrDefault(u => u.JwtHash == _securityHandler.HashString(token));
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Net.Mail;
 using System.Net;
+using LockBox.Commons.Services.Interfaces;
 
 namespace LockBox.Commons.Services
 {
-    public class VerificationEmailService
+    public class VerificationEmailService : IVerificationEmailService
     {
         public string VerificationEmail(string userEmail)
         {

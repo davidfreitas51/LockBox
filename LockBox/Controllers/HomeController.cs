@@ -1,27 +1,22 @@
 using LockBox.Commons.Models.Messages;
 using LockBox.Commons.Models.Messages.User;
-using LockBox.Commons.Services;
-using LockBox.Models;
-using LockBox.Services;
+using LockBox.Commons.Services.Interfaces;
+using LockBox.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 
 namespace LockBox.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SecurityHandler _jwtHandler;
-        private readonly SendRequestService _sendRequestService;
-        private readonly SecurityHandler _securityHandler;
-        public HomeController(SecurityHandler jwtHandler, SendRequestService sendRequestService, SecurityHandler securityHandler)
+        private readonly ISendRequestService _sendRequestService;
+        private readonly ISecurityHandler _securityHandler;
+        public HomeController(ISendRequestService sendRequestService, ISecurityHandler securityHandler)
         {
             _securityHandler = securityHandler;
-            _jwtHandler = jwtHandler;
             _sendRequestService = sendRequestService;
         }
         public IActionResult Index()

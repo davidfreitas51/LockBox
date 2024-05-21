@@ -1,4 +1,5 @@
 using LockBox.Commons.Services;
+using LockBox.Commons.Services.Interfaces;
 using LockBox.Models;
 using LockBoxAPI.Repository;
 using LockBoxAPI.Repository.Contracts;
@@ -27,26 +28,25 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRegisteredAccountRepository, RegisteredAccountRepository>();
-builder.Services.AddScoped<VerificationEmailService>();
-builder.Services.AddScoped<SecurityHandler>();
+builder.Services.AddScoped<IVerificationEmailService, VerificationEmailService>();
+builder.Services.AddScoped<ISecurityHandler, SecurityHandler>();
 
 builder.Services.AddDbContext<LockBoxContext>(opt =>
     opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LockBoxDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
-// Adiciona Identity
+
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<LockBoxContext>()
     .AddDefaultTokenProviders();
 
-// Configura opções de senha (você pode ajustar conforme necessário)
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
+    options.Password.RequireUppercase = true;
     options.Password.RequiredUniqueChars = 1;
-    options.Password.RequiredLength = 6;
+    options.Password.RequiredLength = 12;
 });
 
 // Configura autenticação com cookies
@@ -64,7 +64,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -73,7 +72,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // Adicione esta linha para garantir que a autenticação seja usada
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();

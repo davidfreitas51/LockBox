@@ -1,5 +1,5 @@
-﻿using LockBox.Models;
-using Microsoft.Extensions.Configuration;
+﻿using LockBox.Commons.Services.Interfaces;
+using LockBox.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,11 +8,11 @@ using System.Text;
 
 namespace LockBox.Commons.Services
 {
-    public class SecurityHandler
+    public class SecurityHandler : ISecurityHandler
     {
         private readonly string Key = "WqYsL2tA6X1Yo1MlInDmF7bPdGxVHrQcJ4oZvTgKjIeU9yB3lC5fR8wS0MzNpOuYhX6WqYsL2tA6X1nDmF7bPdGxVHrQcJ4oZvTgKjIeU9yB3lC5fR8wS0MzNpOuYhX6";
-        private static byte[] key = new byte[32]; // 256 bits
-        private static byte[] iv = new byte[16]; // 128 bits
+        private static byte[] key = new byte[32]; 
+        private static byte[] iv = new byte[16]; 
         public string CreateToken(AppUser user)
         {
             List<Claim> claims = new List<Claim>

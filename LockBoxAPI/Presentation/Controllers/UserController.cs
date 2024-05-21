@@ -1,6 +1,6 @@
 ﻿using LockBox.Commons.Models.Messages;
 using LockBox.Commons.Models.Messages.User;
-using LockBox.Commons.Services;
+using LockBox.Commons.Services.Interfaces;
 using LockBox.Models;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
@@ -13,12 +13,12 @@ namespace LockBoxAPI.Presentation.Controllers
     public class UserController : ControllerBase
     {
         private readonly LockBoxContext _context;
-        private readonly SecurityHandler _securityHandler;
-        private readonly VerificationEmailService _emailVerification;
+        private readonly ISecurityHandler _securityHandler;
+        private readonly IVerificationEmailService _emailVerification;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public UserController(LockBoxContext context, VerificationEmailService emailVerification, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, SecurityHandler securityHandler)
+        public UserController(LockBoxContext context, IVerificationEmailService emailVerification, ISecurityHandler securityHandler, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _context = context;
             _emailVerification = emailVerification;
