@@ -5,7 +5,7 @@ Sessions are stored in cookies and JWT tokens, while passwords are encrypted usi
 email verification via code. Both the website and API are part of the project.
 
 ## Technologies
-Some of the technologies adopted in the whole are:
+Some of the technologies adopted in the whole project are:
 - C# / .NET
 - ASP.NET Core
 - API REST
@@ -19,11 +19,12 @@ Some of the technologies adopted in the whole are:
 - Unity of works
 - Independency Injection
  
-### Safety:
+### Safety Measures:
 - JWT Tokens
-- Password hash
-- Filters
-- Cookie-based sessions
+- Password Hashing for user credentials
+- User accounts encrypted with AES
+- Filters Implemented
+- Cookie-Based Sessions
 
 The project follows SOLID principles and Clean Code, ensuring easy maintenance and scalability if needed.
 
