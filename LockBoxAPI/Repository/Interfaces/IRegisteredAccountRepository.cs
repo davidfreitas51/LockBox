@@ -10,5 +10,7 @@ namespace LockBoxAPI.Repository.Contracts
         public RegisteredAccount GetRegisteredAccountById(string id);
         public void UpdateRegisteredAccount(RegisteredAccount accToUpdate);
         public void DeleteRegisteredAccount(string RAId);
+
+        public string CopyPassword(string RAId);
     }
 }

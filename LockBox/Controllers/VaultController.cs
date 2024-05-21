@@ -170,5 +170,32 @@ namespace LockBox.Controllers
             TempData["MSG_E"] = "An error occurred";
             return RedirectToAction("Index");
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> CopyPassword([FromQuery] string id)
+        {
+            string token = Request.Cookies["UserCookies"];
+            string apiUrl = "https://localhost:44394/api/accounts/CopyPassword";
+
+            RAGetByIdRequest request = new RAGetByIdRequest
+            {
+                Token = token,
+                RAId = id,
+            };
+            var json = JsonSerializer.Serialize(request);
+            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var password = await apiResponse.Content.ReadAsStringAsync();
+                TempData["MSG_Pass"] = password;
+                TempData["MSG_S"] = "Password copied to your clipboard";
+                return RedirectToAction("Index");
+            }
+            TempData["MSG_E"] = "An error occurred";
+            return RedirectToAction("Index");
+        }
     }
 }

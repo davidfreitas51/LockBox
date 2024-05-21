@@ -51,4 +51,15 @@ public class RegisteredAccountRepository : IRegisteredAccountRepository
         _context.SaveChanges();
 
     }
+
+    public string CopyPassword(string RAId)
+    {
+        string password = "";
+        var userAcc = _context.RegisteredAccounts.Where(acc => acc.Id.ToString() == RAId).FirstOrDefault();
+        if (userAcc != null)
+        {
+            password = userAcc.Password;
+        }
+        return password;
+    }
 }

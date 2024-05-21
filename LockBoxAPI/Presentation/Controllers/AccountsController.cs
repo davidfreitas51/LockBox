@@ -100,5 +100,18 @@ namespace LockBoxAPI.Presentation.Controllers
             _registeredAccountRepository.DeleteRegisteredAccount(request.RAId);
             return Ok();
         }
+
+
+        [HttpPost("CopyPassword")]
+        public IActionResult CopyPassword(RAGetByIdRequest request)
+        {
+            var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            string passwordHash = _registeredAccountRepository.CopyPassword(request.RAId);
+            return Ok(passwordHash);
+        }
     }
 }
