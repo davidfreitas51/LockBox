@@ -28,13 +28,20 @@ The project follows SOLID principles and Clean Code, ensuring easy maintenance a
 
 ## Installation
 
-In your Visual Studio or preferred IDE, pull the repository. After that, run the "ClinicaDaMulher" project.
+In your Visual Studio or preferred IDE, pull the repository. After that, run the "LockBox.API" project, and then the "LockBox".
 
 ## Usage
 
-The program facilitates the management of appointments, clients and appointment reasons, enabling creation, reading, editing, searching, sorting, and deletion of data as necessary. To schedule an appointment, it is necessary to first register reasons and clients.
+LockBox simplifies the management of passwords by providing a secure platform for storing and accessing sensitive login information. Here's how to use it effectively:
+
+1. **Register/Login**: Start by creating an account or logging in to an existing one. You can also enter with the recruiter account if you don't want to create one for you
+   
+2. **Email Verification**: LockBox enhances security by verifying user email addresses via code. This ensures that only authorized users can access the account and manage passwords.
+
+3. **Managing Passwords**: Once in, users can create, view, edit, and delete their saved credentials as needed. The interface offers intuitive controls for organizing passwords and quickly locating specific entries.
+
+4. **Enhanced Security**: LockBox employs various security measures to safeguard user data. This includes JWT tokens for session management, password hashing to protect user credentials, and AES encryption for encrypting stored passwords. Additionally, filters are implemented to enhance security and streamline data retrieval.
 
 ## Demonstration
 
-Here is a video demonstration of the application's use:
-[Watch the video](https://youtu.be/6vFmhOXRRKM)
+Here is a video demonstration of the application's use: [Watch the video](https://youtu.be/6vFmhOXRRKM)
