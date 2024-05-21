@@ -34,6 +34,7 @@ namespace LockBoxAPI.Presentation.Controllers
             }
             
             request.UserAccount.UserId = user.Id;
+            request.UserAccount.Password = _securityHandler.EncryptAES(request.UserAccount.Password);
             _registeredAccountRepository.RegisterAccount(request.UserAccount);
             return Ok();
         }
@@ -52,6 +53,10 @@ namespace LockBoxAPI.Presentation.Controllers
             if (registeredAccount == null)
             {
                 return NotFound();
+            }
+            foreach (RegisteredAccount acc in registeredAccount)
+            {
+                acc.Password = _securityHandler.DecryptAES(acc.Password);
             }
             string jsonAccounts = JsonSerializer.Serialize(registeredAccount);
             return Ok(jsonAccounts);
@@ -72,6 +77,7 @@ namespace LockBoxAPI.Presentation.Controllers
             {
                 return NotFound();
             }
+            registeredAccount.Password = _securityHandler.DecryptAES(registeredAccount.Password);
             string jsonAccounts = JsonSerializer.Serialize(registeredAccount);
             return Ok(jsonAccounts);
         }
@@ -84,6 +90,7 @@ namespace LockBoxAPI.Presentation.Controllers
             {
                 return BadRequest();
             }
+            request.UserAccount.Password = _securityHandler.EncryptAES(request.UserAccount.Password);
             _registeredAccountRepository.UpdateRegisteredAccount(request.UserAccount);
             return Ok();
         }
@@ -110,8 +117,9 @@ namespace LockBoxAPI.Presentation.Controllers
             {
                 return BadRequest();
             }
-            string passwordHash = _registeredAccountRepository.CopyPassword(request.RAId);
-            return Ok(passwordHash);
+            string passwordAES = _registeredAccountRepository.CopyPassword(request.RAId);
+            string password = _securityHandler.DecryptAES(passwordAES);
+            return Ok(password);
         }
     }
 }
