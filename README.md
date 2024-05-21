@@ -38,7 +38,7 @@ LockBox simplifies the management of passwords by providing a secure platform fo
 
 1. **Register/Login**: Start by creating an account or logging in to an existing one. You can also enter with the recruiter account if you don't want to create one for you
    
-2. **Email Verification**: LockBox enhances security by verifying user email addresses via code. This ensures that only authorized users can access the account and manage passwords.
+2. **Email Verification**: To validate your account, LockBox verifies user email address via code. This ensures that only valid users can access the account and manage passwords.
 
 3. **Managing Passwords**: Once in, users can create, view, edit, and delete their saved credentials as needed. The interface offers intuitive controls for organizing passwords and quickly locating specific entries.
 
