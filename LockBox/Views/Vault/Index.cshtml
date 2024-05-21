@@ -27,9 +27,15 @@
                                 <td>@account.Title</td>
                                 <td>@account.Username</td>
                                 <td>
-                                    <button onclick="copyPassword('@account.Id')" type="button" class="btn btn-sm btn-outline-secondary">C</button>
-                                    <a asp-action="UpdateItem" asp-controller="Vault" asp-route-id="@account.Id" type="button" class="btn btn-sm btn-outline-secondary">E</a>
-                                    <button onclick="confirmDelete('@account.Id')" type="button" class="btn btn-sm btn-outline-secondary">D</button>
+                                    <button onclick="copyPassword('@account.Id')" type="button" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <a asp-action="UpdateItem" asp-controller="Vault" asp-route-id="@account.Id" type="button" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button onclick="confirmDelete('@account.Id')" type="button" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </td>
                             </tr>
                             a++;
@@ -57,8 +63,9 @@
     }
 
     function copyPassword(id) {
-        window.location.href = '/Vault/CopyPassword?id=' + id;
+            window.location.href = '/Vault/CopyPassword?id=' + id;
     }
+
 
     document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function () {

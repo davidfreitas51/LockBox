@@ -49,9 +49,8 @@ namespace LockBox.Controllers
                 return View(userRegisterRequest);
             }
 
-            string json = JsonConvert.SerializeObject(userRegisterRequest);
             string apiUrl = "https://localhost:44394/api/User/Register";
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(userRegisterRequest, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -71,9 +70,8 @@ namespace LockBox.Controllers
             UserAskConfirmationEmail request = new UserAskConfirmationEmail();
             request.Email = TempData["Email"].ToString();
 
-            string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/SendVerificationCode";
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             UserEmailVerificationRequest fillFields = new UserEmailVerificationRequest
             {
@@ -85,10 +83,9 @@ namespace LockBox.Controllers
         [HttpPost("EmailVerification")]
         public async Task<IActionResult> EmailVerification([FromForm]UserEmailVerificationRequest request)
         {
-            string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/VerifyCode";
 
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -108,10 +105,9 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm]UserLoginRequest request)
         {
-            string json = JsonConvert.SerializeObject(request);
             string apiUrl = "https://localhost:44394/api/User/Login";
 
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -166,10 +162,9 @@ namespace LockBox.Controllers
                 Email = "wageyot233@javnoi.com",
                 Password = _securityHandler.DecryptAES("yFADLsEJ+vJ+ikdliB9CcZa8O+6Ya/Z2NtyjLGHkdoE=")
             };
-            string json = JsonConvert.SerializeObject(userRequest);
             string apiUrl = "https://localhost:44394/api/User/Login";
 
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            var apiResponse = await _sendRequestService.PostRequest(userRequest, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {

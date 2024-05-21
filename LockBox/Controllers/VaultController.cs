@@ -22,22 +22,14 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/Get";
-
-            RAGetByUserRequest request = new RAGetByUserRequest
-            {
-                Token = token
-            };
-            string requestJson = JsonSerializer.Serialize(request);
-
-            var apiResponse = await _sendRequestService.PostRequest(requestJson, apiUrl);
+            GetTokenAndUrl("Get", out string token, out string apiUrl);
+            var request = new RATokenRequest { Token = token };
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.StatusCode == HttpStatusCode.NotFound)
             {
                 return View();
             }
-
             if (apiResponse.StatusCode == HttpStatusCode.OK)
             {
                 string responseContent = await apiResponse.Content.ReadAsStringAsync();
@@ -45,11 +37,8 @@ namespace LockBox.Controllers
                 return View(accountsList);
             }
             TempData["MSG_E"] = "An error occurred";
-            return View((object)null);
+            return View(null);
         }
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> NewItem()
@@ -64,21 +53,13 @@ namespace LockBox.Controllers
             ModelState.Remove("UserId");
             if (!ModelState.IsValid)
             {
-                TempData["MSG_E"] = "An error occurred";
+                TempData["MSG_E"] = "An error occurred, check the fields";
                 return View();
             }
 
-            string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/Register";
-
-            RARequest request = new RARequest
-            {
-                Token = token,
-                UserAccount = account,
-            };
-            var json = JsonSerializer.Serialize(request);
-
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            GetTokenAndUrl("Register", out string token, out string apiUrl);
+            var request = new RATokenAccountRequest { Token = token, UserAccount = account };
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -93,17 +74,9 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateItem(string id)
         {
-            string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/GetById";
-
-            RAGetByIdRequest request = new RAGetByIdRequest
-            {
-                Token = token,
-                RAId = id,
-            };
-            var json = JsonSerializer.Serialize(request);
-
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            GetTokenAndUrl("GetById", out string token, out string apiUrl);
+            var request = new RATokenAccIdRequest { Token = token, RAId = id, };
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -122,21 +95,13 @@ namespace LockBox.Controllers
             ModelState.Remove("UserId");
             if (!ModelState.IsValid)
             {
-                TempData["MSG_E"] = "An error occurred";
+                TempData["MSG_E"] = "An error occurred, check the fields";
                 return View();
             }
 
-            string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/Update";
-
-            RARequest request = new RARequest
-            {
-                Token = token,
-                UserAccount = account,
-            };
-            var json = JsonSerializer.Serialize(request);
-
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            GetTokenAndUrl("Update", out string token, out string apiUrl);
+            var request = new RATokenAccountRequest { Token = token, UserAccount = account, };
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -151,16 +116,9 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteItem([FromQuery]string id)
         {
-            string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/DeleteAccount";
-
-            RAGetByIdRequest request = new RAGetByIdRequest
-            {
-                Token = token,
-                RAId = id,
-            };
-            var json = JsonSerializer.Serialize(request);
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            GetTokenAndUrl("DeleteAccount", out string token, out string apiUrl);
+            RATokenAccIdRequest request = new RATokenAccIdRequest { Token = token,RAId = id, };
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -172,20 +130,12 @@ namespace LockBox.Controllers
         }
 
 
-
         [HttpGet]
         public async Task<IActionResult> CopyPassword([FromQuery] string id)
         {
-            string token = Request.Cookies["UserCookies"];
-            string apiUrl = "https://localhost:44394/api/accounts/CopyPassword";
-
-            RAGetByIdRequest request = new RAGetByIdRequest
-            {
-                Token = token,
-                RAId = id,
-            };
-            var json = JsonSerializer.Serialize(request);
-            var apiResponse = await _sendRequestService.PostRequest(json, apiUrl);
+            GetTokenAndUrl("CopyPassword", out string token, out string apiUrl);
+            RATokenAccIdRequest request = new RATokenAccIdRequest {Token = token,RAId = id };
+            var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -196,6 +146,12 @@ namespace LockBox.Controllers
             }
             TempData["MSG_E"] = "An error occurred";
             return RedirectToAction("Index");
+        }
+
+        private void GetTokenAndUrl(string endpoint, out string token, out string urlApi)
+        {
+            token = Request.Cookies["UserCookies"];
+            urlApi = $"https://localhost:44394/api/accounts/{endpoint}";
         }
     }
 }

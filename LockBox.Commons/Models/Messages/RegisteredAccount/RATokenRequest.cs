@@ -1,6 +1,6 @@
 ﻿namespace LockBox.Commons.Models.Messages.RegisteredAccount
 {
-    public class RAGetByUserRequest
+    public class RATokenRequest
     {
         public string Token { get; set; }
     }

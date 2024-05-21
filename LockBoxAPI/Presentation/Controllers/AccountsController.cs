@@ -25,7 +25,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("Register")]
-        public IActionResult Register(RARequest request)
+        public IActionResult Register(RATokenAccountRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
@@ -41,7 +41,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("Get")]
-        public IActionResult Get(RAGetByUserRequest request)
+        public IActionResult Get(RATokenRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
@@ -64,7 +64,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("GetById")]
-        public IActionResult GetById(RAGetByIdRequest request)
+        public IActionResult GetById(RATokenAccIdRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
@@ -83,7 +83,7 @@ namespace LockBoxAPI.Presentation.Controllers
         }
 
         [HttpPost("Update")]
-        public IActionResult Update(RARequest request)
+        public IActionResult Update(RATokenAccountRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
@@ -97,7 +97,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("DeleteAccount")]
-        public IActionResult DeleteAccount(RAGetByIdRequest request)
+        public IActionResult DeleteAccount(RATokenAccIdRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
@@ -110,7 +110,7 @@ namespace LockBoxAPI.Presentation.Controllers
 
 
         [HttpPost("CopyPassword")]
-        public IActionResult CopyPassword(RAGetByIdRequest request)
+        public IActionResult CopyPassword(RATokenAccIdRequest request)
         {
             var user = _context.Users.Where(u => u.JwtHash == _securityHandler.HashString(request.Token)).FirstOrDefault();
             if (user == null)
