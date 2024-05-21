@@ -1,8 +1,6 @@
 # LockBox
 
-LockBox is a password manager that communicates with a REST API to handle user and password CRUD operations.
-Sessions are stored in cookies and JWT tokens, while passwords are encrypted using Hash and AES, in addition to
-email verification via code. Both the website and API are part of the project.
+LockBox is a password manager that communicates with a REST API to handle user and password CRUD operations. Sessions are stored in cookies and JWT tokens, while passwords are encrypted using Hash and AES, in addition to email verification via code. Both the website and API are part of the project.
 
 ## Technologies
 Some of the technologies adopted in the whole project are:
