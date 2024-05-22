@@ -23,7 +23,8 @@ Some of the technologies adopted in the whole project are:
 - User accounts encrypted with AES
 - Filters Implemented
 - Cookie-Based Sessions
-
+- ASP.NET Identity-based users
+  
 The project follows SOLID principles and Clean Code, ensuring easy maintenance and scalability if needed.
 
 
