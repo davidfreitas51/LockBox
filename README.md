@@ -31,10 +31,12 @@ The project follows SOLID principles and Clean Code, ensuring easy maintenance a
 ## Installation
 
 1. In your Visual Studio or preferred IDE, pull the repository. 
-2. Run the "LockBoxAPI" project.
-3. Run the "LockBox" project.
+2. Click the arrow down next to the button "start without debugging"
+3. Select "Multiple startup projects"
+4. For "LockBox" and "LockBoxAPI", put the action as "Start"
+5. Apply the changes
+6. Run the project
 
-You can use Visual Studio "Multiple Startup Projects" to do it
 If any doubts, check the demonstration video 
 
 ## Usage
