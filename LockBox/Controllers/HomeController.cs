@@ -5,6 +5,7 @@ using LockBox.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 using System.Security.Claims;
 
@@ -33,6 +34,11 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromForm]UserRegisterRequest userRegisterRequest)
         {
+            if (userRegisterRequest.Password == null)
+            {
+                ViewBag.Errors = "You need to have a password";
+                return View(userRegisterRequest);
+            }
             if (userRegisterRequest.Password.Length < 12)
             {
                 ViewBag.Errors = "The password needs at least 12 characters";
@@ -212,15 +218,16 @@ namespace LockBox.Controllers
         }
         private async Task<string> GetFirstError(HttpResponseMessage responseMessage)
         {
-            if(responseMessage.Content != null)
+            if (responseMessage.Content != null)
             {
                 var errorResponseFromAPI = await responseMessage.Content.ReadAsStringAsync();
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.Errors.Add(errorResponseFromAPI);
+                var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(errorResponseFromAPI);
 
-                return errorResponse.Errors[0];
+                return errorResponse.Errors.FirstOrDefault() ?? "Error";
             }
             return "Error";
+
+
         }
     }
 }
