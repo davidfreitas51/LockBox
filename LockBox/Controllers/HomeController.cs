@@ -50,7 +50,7 @@ namespace LockBox.Controllers
                 return View(userRegisterRequest);
             }
 
-            string apiUrl = "https://localhost:44394/api/User/Register";
+            string apiUrl = GetApiUrlUser("Register");
             var apiResponse = await _sendRequestService.PostRequest(userRegisterRequest, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
@@ -84,8 +84,7 @@ namespace LockBox.Controllers
         [HttpPost("EmailVerification")]
         public async Task<IActionResult> EmailVerification([FromForm]UserEmailVerificationRequest request)
         {
-            string apiUrl = "https://localhost:44394/api/User/VerifyCode";
-
+            string apiUrl = GetApiUrlUser("VerifyCode");
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
@@ -106,8 +105,7 @@ namespace LockBox.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm]UserLoginRequest request)
         {
-            string apiUrl = "https://localhost:44394/api/User/Login";
-
+            string apiUrl = GetApiUrlUser("Login");
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             if (apiResponse.IsSuccessStatusCode)
@@ -163,7 +161,7 @@ namespace LockBox.Controllers
                 Email = "wageyot233@javnoi.com",
                 Password = _securityHandler.DecryptAES("yFADLsEJ+vJ+ikdliB9CcZa8O+6Ya/Z2NtyjLGHkdoE=")
             };
-            string apiUrl = "https://localhost:44394/api/User/LoginRecruiter";
+            string apiUrl = GetApiUrlUser("LoginRecruiter");
 
             var apiResponse = await _sendRequestService.PostRequest(userRequest, apiUrl);
 
@@ -226,8 +224,11 @@ namespace LockBox.Controllers
                 return errorResponse.Errors.FirstOrDefault() ?? "Error";
             }
             return "Error";
-
-
+        }
+        public string GetApiUrlUser(string endpoint)
+        {
+            string apiUrl = $"https://localhost:44394/api/user/{endpoint}";
+            return apiUrl;
         }
     }
 }

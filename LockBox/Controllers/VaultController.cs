@@ -1,7 +1,6 @@
 ﻿using LockBox.Commons.Models;
 using LockBox.Commons.Models.Messages.RegisteredAccount;
 using LockBox.Models;
-using LockBox.Services;
 using LockBox.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,7 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            GetTokenAndUrl("Get", out string token, out string apiUrl);
+            GetTokenAndUrlAccounts("Get", out string token, out string apiUrl);
             var request = new RATokenRequest { Token = token };
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
@@ -58,7 +57,7 @@ namespace LockBox.Controllers
                 return View();
             }
 
-            GetTokenAndUrl("Register", out string token, out string apiUrl);
+            GetTokenAndUrlAccounts("Register", out string token, out string apiUrl);
             var request = new RATokenAccountRequest { Token = token, UserAccount = account };
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
@@ -75,7 +74,7 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateItem(string id)
         {
-            GetTokenAndUrl("GetById", out string token, out string apiUrl);
+            GetTokenAndUrlAccounts("GetById", out string token, out string apiUrl);
             var request = new RATokenAccIdRequest { Token = token, RAId = id, };
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
@@ -100,7 +99,7 @@ namespace LockBox.Controllers
                 return View();
             }
 
-            GetTokenAndUrl("Update", out string token, out string apiUrl);
+            GetTokenAndUrlAccounts("Update", out string token, out string apiUrl);
             var request = new RATokenAccountRequest { Token = token, UserAccount = account, };
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
@@ -117,7 +116,7 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteItem([FromQuery]string id)
         {
-            GetTokenAndUrl("DeleteAccount", out string token, out string apiUrl);
+            GetTokenAndUrlAccounts("DeleteAccount", out string token, out string apiUrl);
             RATokenAccIdRequest request = new RATokenAccIdRequest { Token = token,RAId = id, };
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
@@ -134,7 +133,7 @@ namespace LockBox.Controllers
         [HttpGet]
         public async Task<IActionResult> CopyPassword([FromQuery] string id)
         {
-            GetTokenAndUrl("CopyPassword", out string token, out string apiUrl);
+            GetTokenAndUrlAccounts("CopyPassword", out string token, out string apiUrl);
             RATokenAccIdRequest request = new RATokenAccIdRequest {Token = token,RAId = id };
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
@@ -149,7 +148,7 @@ namespace LockBox.Controllers
             return RedirectToAction("Index");
         }
 
-        private void GetTokenAndUrl(string endpoint, out string token, out string urlApi)
+        private void GetTokenAndUrlAccounts(string endpoint, out string token, out string urlApi)
         {
             token = Request.Cookies["UserCookies"];
             urlApi = $"https://localhost:44394/api/accounts/{endpoint}";
