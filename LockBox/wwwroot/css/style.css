@@ -7,9 +7,17 @@
 }
 
 .form-container {
-    max-width: 400px; /* Adjust the width as needed */
+    max-width: 400px;
     margin: auto;
 }
+
+.right-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the container */
+}
+
+
 
 .otp-field input {
     height: 45px;

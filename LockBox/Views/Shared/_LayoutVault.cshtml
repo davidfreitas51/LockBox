@@ -20,7 +20,10 @@
 <body>
     <div class="d-flex">
         <div class="sidebar" style="background-color: darkgreen; color: white; width: 250px; height: 100vh; position: fixed; top: 0; left: 0; padding: 20px;">
-            <a href="/" style="padding-left: 15px; font-size: 2em; font-weight: bold; display: block; color: inherit; text-decoration: none;">LockBox</a>
+            <a href="/" style="padding-left: 15px; font-size: 2em; font-weight: bold; display: block; color: inherit; text-decoration: none;">
+                <img src="~/lib/images/LockBoxLogo.png" alt="Logo" style="height: 30px; width: 30px; vertical-align: middle; margin-right: 10px;">
+                LockBox
+            </a>
 
             <ul class="nav nav-pills flex-column mb-auto">
                 <li>
@@ -73,6 +76,23 @@
                 }
             }, 100);
         });
+    </script>
+    <script>
+        document.getElementById('generatePasswordBtn').addEventListener('click', function () {
+            var passwordField = document.getElementById('exampleInputPassword1');
+            var randomPassword = generateRandomPassword(15); // Change 15 to desired length
+            passwordField.value = randomPassword;
+        });
+
+        function generateRandomPassword(length) {
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var password = "";
+            for (var i = 0; i < length; i++) {
+                var randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            return password;
+        }
     </script>
 </body>
 </html>
