@@ -5,6 +5,7 @@ using LockBox.Models;
 using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -62,7 +63,7 @@ namespace LockBoxAPI.Presentation.Controllers
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
 
-            if ( user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -92,7 +93,7 @@ namespace LockBoxAPI.Presentation.Controllers
         }
 
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -130,6 +131,41 @@ namespace LockBoxAPI.Presentation.Controllers
             return BadRequest("Invalid login attempt.");
         }
 
-        
+        [HttpPost("LoginRecruiter")]
+        public async Task<IActionResult> LoginRecruiter(UserLoginRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            if (user == null)
+            {
+                // Create a new user if not found
+                var registerRequest = new UserRegisterRequest
+                {
+                    Email = request.Email,
+                    Password = request.Password,
+                    ConfirmPassword = request.Password
+                };
+                await RegisterRecruiter(registerRequest);
+            }
+
+            string jwtToken = _securityHandler.CreateToken(user);
+            string hashedJwt = _securityHandler.HashString(jwtToken);
+
+            user.JwtHash = hashedJwt;
+            _context.SaveChanges();
+
+            return Ok(jwtToken);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task RegisterRecruiter(UserRegisterRequest request)
+        {
+            var user = new AppUser
+            {
+                Email = request.Email,
+                UserName = request.Email,
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+            }
+        }
     }
-}

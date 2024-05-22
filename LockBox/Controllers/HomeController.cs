@@ -163,7 +163,7 @@ namespace LockBox.Controllers
                 Email = "wageyot233@javnoi.com",
                 Password = _securityHandler.DecryptAES("yFADLsEJ+vJ+ikdliB9CcZa8O+6Ya/Z2NtyjLGHkdoE=")
             };
-            string apiUrl = "https://localhost:44394/api/User/Login";
+            string apiUrl = "https://localhost:44394/api/User/LoginRecruiter";
 
             var apiResponse = await _sendRequestService.PostRequest(userRequest, apiUrl);
 
