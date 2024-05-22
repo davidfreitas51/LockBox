@@ -44,7 +44,7 @@ LockBox simplifies the management of passwords by providing a secure platform fo
    
 2. **Email Verification**: To validate your account, LockBox verifies user email address via code. This ensures that only valid users can access the account and manage passwords.
 
-3. **Managing Passwords**: Once in, users can create, view, edit, and delete their saved credentials as needed. The interface offers intuitive controls for organizing passwords and quickly locating specific entries.
+3. **Managing Passwords**: Once in, users can create, view, edit and delete their saved credentials as needed. The interface offers intuitive controls for organizing passwords and quickly locating specific entries.
 
 4. **Enhanced Security**: LockBox employs various security measures to safeguard user data. This includes JWT tokens for session management, password hashing to protect user credentials, and AES encryption for encrypting stored passwords. Additionally, filters are implemented to enhance security and streamline data retrieval.
 
