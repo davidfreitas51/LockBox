@@ -71,7 +71,7 @@ namespace LockBox.Controllers
             UserAskConfirmationEmail request = new UserAskConfirmationEmail();
             request.Email = TempData["Email"].ToString();
 
-            string apiUrl = "https://localhost:44394/api/User/SendVerificationCode";
+            string apiUrl = GetApiUrlUser("SendVerificationCode");
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
 
             UserEmailVerificationRequest fillFields = new UserEmailVerificationRequest
@@ -227,7 +227,7 @@ namespace LockBox.Controllers
         }
         public string GetApiUrlUser(string endpoint)
         {
-            string apiUrl = $"https://localhost:44394/api/user/{endpoint}";
+            string apiUrl = $"https://lockboxapi20240522231245.azurewebsites.net/api/user/{endpoint}";
             return apiUrl;
         }
     }
