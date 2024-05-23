@@ -151,7 +151,7 @@ namespace LockBox.Controllers
         private void GetTokenAndUrlAccounts(string endpoint, out string token, out string urlApi)
         {
             token = Request.Cookies["UserCookies"];
-            urlApi = $"https://lockboxapi20240522231245.azurewebsites.net/api/account/{endpoint}";
+            urlApi = $"https://lockboxapi20240522231245.azurewebsites.net/api/accounts/{endpoint}";
         }
     }
 }

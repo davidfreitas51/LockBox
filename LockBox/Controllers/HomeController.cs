@@ -58,9 +58,20 @@ namespace LockBox.Controllers
                 TempData["Email"] = userRegisterRequest.Email;
                 return RedirectToAction(nameof(EmailVerification));
             }
-            if (apiResponse.Content != null)
+            if (apiResponse.StatusCode == HttpStatusCode.BadRequest)
             {
-                ViewBag.Errors = GetFirstError(apiResponse).Result;
+                ViewBag.Errors = "User already exists!";
+            }
+            else if (apiResponse.Content != null)
+            {
+                try
+                {
+                    ViewBag.Errors = GetFirstError(apiResponse).Result;
+                }
+                catch
+                {
+                    ViewBag.Errors = "An error ocurred";
+                }
             }
             return View(userRegisterRequest);
         }
