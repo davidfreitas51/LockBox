@@ -51,4 +51,4 @@ LockBox simplifies the management of passwords by providing a secure platform fo
 
 ## Demonstration
 
-Here is a video demonstration of the application's use: [Watch the video](https://youtu.be/6vFmhOXRRKM)
+Here is a video demonstration of the application's use: [Watch the video](https://www.youtube.com/watch?v=AeX5Um61gxA)
