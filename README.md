@@ -1,6 +1,6 @@
 # LockBox
 
-LockBox is a password manager that communicates with a REST API to handle user and password CRUD operations. Sessions are stored in cookies and JWT tokens, while passwords are encrypted using Hash and AES, in addition to email verification via code. Both the website and API are part of the project.
+LockBox is a password manager that communicates with a REST API to handle user and password CRUD operations. Sessions are stored in cookies and JWT tokens, while passwords are encrypted using Hash and AES, in addition to email verification via code. Both the website and API are part of the project, but the API in use is uploaded on Microsoft Azure.
 
 ## Technologies
 Some of the technologies adopted in the whole project are:
@@ -10,6 +10,7 @@ Some of the technologies adopted in the whole project are:
 - HTML5 and CSS3
 - SQL Server
 - EF Core
+- Azure Cloud
 
 ### Patterns:
 - MVC for the website
@@ -31,11 +32,8 @@ The project follows SOLID principles and Clean Code, ensuring easy maintenance a
 ## Installation
 
 1. In your Visual Studio or preferred IDE, pull the repository. 
-2. Click the arrow down next to the button "start without debugging"
-3. Select "Multiple startup projects"
-4. For "LockBox" and "LockBoxAPI", put the action as "Start"
-5. Apply the changes
-6. Run the project
+2. Run the "LockBox" project
+Obs: The API in the project isn't the API in use, it have the same code, but the one in use is uploaded at Azure
 
 If any doubts, check the demonstration video 
 
