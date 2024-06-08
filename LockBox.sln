@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LockBox", "LockBox\LockBox.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LockBoxAPI", "LockBoxAPI\LockBoxAPI.csproj", "{DE419E1D-1C11-49C4-A692-D66B990E819F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockBox.Commons", "LockBox.Commons\LockBox.Commons.csproj", "{869F5A5B-7A88-46C9-8A47-B0BBECC3AE6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockBox.Shared", "LockBox.Shared\LockBox.Shared.csproj", "{DAEBF41E-31B1-4217-8803-E85584784B33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{DE419E1D-1C11-49C4-A692-D66B990E819F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE419E1D-1C11-49C4-A692-D66B990E819F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE419E1D-1C11-49C4-A692-D66B990E819F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{869F5A5B-7A88-46C9-8A47-B0BBECC3AE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{869F5A5B-7A88-46C9-8A47-B0BBECC3AE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{869F5A5B-7A88-46C9-8A47-B0BBECC3AE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{869F5A5B-7A88-46C9-8A47-B0BBECC3AE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAEBF41E-31B1-4217-8803-E85584784B33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAEBF41E-31B1-4217-8803-E85584784B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAEBF41E-31B1-4217-8803-E85584784B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAEBF41E-31B1-4217-8803-E85584784B33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,6 +28,7 @@ namespace LockBox.Controllers
         [HttpGet]
         public IActionResult CreateAccount()
         {
+            string abc;
             return View();
         }
 
@@ -238,7 +239,8 @@ namespace LockBox.Controllers
         }
         public string GetApiUrlUser(string endpoint)
         {
-            string apiUrl = $"https://lockboxapi20240522231245.azurewebsites.net/api/user/{endpoint}";
+            string apiUrl = $"https://localhost:7070/api/user/{endpoint}";
+
             return apiUrl;
         }
     }

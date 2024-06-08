@@ -5,7 +5,6 @@ using LockBoxAPI.Repository.Database;
 public class RegisteredAccountRepository : IRegisteredAccountRepository
 {
     private readonly LockBoxContext _context;
-
     public RegisteredAccountRepository(LockBoxContext context)
     {
         _context = context;

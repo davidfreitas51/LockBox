@@ -32,7 +32,7 @@ builder.Services.AddScoped<IVerificationEmailService, VerificationEmailService>(
 builder.Services.AddScoped<ISecurityHandler, SecurityHandler>();
 
 builder.Services.AddDbContext<LockBoxContext>(opt =>
-    opt.UseSqlServer("Server=tcp:lockboxdatabase.database.windows.net,1433;Initial Catalog=LockBoxDB;Persist Security Info=False;User ID={Your_User};Password={Your_Password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+    opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LockBoxDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
