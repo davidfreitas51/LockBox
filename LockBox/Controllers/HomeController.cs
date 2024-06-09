@@ -213,7 +213,14 @@ namespace LockBox.Controllers
                 ViewBag.Errors = "Too many requests. Try again later";
                 return View(userRequest);
             }
-            ViewBag.Errors = GetFirstError(apiResponse).Result;
+            try
+            {
+                ViewBag.Errors = GetFirstError(apiResponse).Result;
+            }
+            catch
+            {
+                ViewBag.Errors = "The database is now working, try again";
+            }
             return View(userRequest);
         }
 
