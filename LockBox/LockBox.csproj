@@ -16,8 +16,4 @@
     <ProjectReference Include="..\LockBox.Shared\LockBox.Shared.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="taskkill /F /IM LockBox.exe&#xA;wmic process where name='LockBox.exe' delete" />
-  </Target>
-
 </Project>
