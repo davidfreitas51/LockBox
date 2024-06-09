@@ -30,10 +30,10 @@ Some of the technologies adopted in the whole project are:
 ## Installation
 
 1. In your Visual Studio or preferred IDE, pull the repository. 
-2. Run the "LockBox" project
+2. Run the "LockBoxAPI" project
+3. Run the "LockBox" project
 
-Obs: The API in the project isn't the API in use, it has the same code, but the one in use is uploaded at Azure
-
+You can do this by configuring multi-project startup
 If any doubts, check the demonstration video 
 
 ## Usage
