@@ -33,7 +33,7 @@ namespace LockBox.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromForm]UserRegisterRequest userRegisterRequest)
+        public async Task<IActionResult> CreateAccount([FromForm] UserRegisterRequest userRegisterRequest)
         {
             if (userRegisterRequest.Password == null)
             {
@@ -94,7 +94,7 @@ namespace LockBox.Controllers
         }
 
         [HttpPost("EmailVerification")]
-        public async Task<IActionResult> EmailVerification([FromForm]UserEmailVerificationRequest request)
+        public async Task<IActionResult> EmailVerification([FromForm] UserEmailVerificationRequest request)
         {
             string apiUrl = GetApiUrlUser("VerifyCode");
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
@@ -115,7 +115,7 @@ namespace LockBox.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm]UserLoginRequest request)
+        public async Task<IActionResult> Login([FromForm] UserLoginRequest request)
         {
             string apiUrl = GetApiUrlUser("Login");
             var apiResponse = await _sendRequestService.PostRequest(request, apiUrl);
@@ -124,7 +124,7 @@ namespace LockBox.Controllers
             {
                 var token = await apiResponse.Content.ReadAsStringAsync();
 
-                
+
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Role, "User")
@@ -219,9 +219,9 @@ namespace LockBox.Controllers
             }
             catch
             {
-                ViewBag.Errors = "The database is now working, try again";
+                return RedirectToAction(nameof(LoginAsRecruiter));
             }
-            return View(userRequest);
+            return RedirectToAction("Login", userRequest);
         }
 
         private string GetModelStateErrors()
