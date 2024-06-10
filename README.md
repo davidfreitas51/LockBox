@@ -33,6 +33,7 @@ Some of the technologies adopted in the whole project are:
 3. Run the "LockBox" project
 
 You can do this by configuring multi-project startup
+
 If any doubts, check the demonstration video 
 
 ## Usage
