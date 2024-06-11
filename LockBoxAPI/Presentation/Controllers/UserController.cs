@@ -6,6 +6,7 @@ using LockBoxAPI.Repository.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace LockBoxAPI.Presentation.Controllers
 {
@@ -56,7 +57,6 @@ namespace LockBoxAPI.Presentation.Controllers
 
             return BadRequest(errorResponse);
         }
-
 
         [HttpPost("SendVerificationCode")]
         public async Task<IActionResult> SendVerificationCode(UserAskConfirmationEmail request)

@@ -28,7 +28,7 @@ namespace LockBox.Controllers
 
             if (apiResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                return View();
+                return View(null);
             }
             if (apiResponse.StatusCode == HttpStatusCode.OK)
             {

@@ -16,6 +16,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Home/Login";
         options.AccessDeniedPath = "/Forbidden/";
     });
+
+// Registrar HttpClient e APIService
+
 builder.Services.AddScoped<ISecurityHandler, SecurityHandler>();
 builder.Services.AddScoped<ISendRequestService, SendRequestService>();
 
@@ -32,7 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();    
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
