@@ -1,6 +1,6 @@
 # LockBox
 
-LockBox is a password manager that communicates with a REST API to handle user and password CRUD operations. Sessions are stored in cookies and JWT tokens, while passwords are encrypted using Hash and AES, in addition to email verification via code. Both the website and API are part of the project, but the API in use is uploaded at Microsoft Azure.
+LockBox is a password manager that communicates with a REST API to handle user and password CRUD operations. Sessions are stored in cookies and JWT tokens, while passwords are encrypted using Hash and AES, in addition to email verification via code. Both the website and API are part of the project.
 
 ## Technologies
 Some of the technologies adopted in the whole project are:
@@ -10,7 +10,6 @@ Some of the technologies adopted in the whole project are:
 - HTML5 and CSS3
 - SQL Server
 - EF Core
-- Azure Cloud
 
 ### Patterns:
 - MVC for the website
@@ -34,13 +33,14 @@ Some of the technologies adopted in the whole project are:
 3. Run the "LockBox" project
 
 You can do this by configuring multi-project startup
+
 If any doubts, check the demonstration video 
 
 ## Usage
 
 LockBox simplifies the management of passwords by providing a secure platform for storing and accessing sensitive login information. Here's how to use it effectively:
 
-1. **Register/Login**: Begin by creating a new account or logging in to an existing one. You may also use the recruiter account if you prefer not to create a personal account. Please note, this recruiter account is public and visible to recruiters, so avoid saving any real personal information. I apologize for any inconvenience caused by previous users.
+1. **Register/Login**: Begin by creating a new account or logging in to an existing one. You may also use the recruiter account if you prefer not to create a personal account.
 
 2. **Email Verification**: To validate your account, LockBox verifies user email address via code. This ensures that only valid users can access the account and manage passwords.
 
@@ -51,4 +51,4 @@ LockBox simplifies the management of passwords by providing a secure platform fo
 
 ## Demonstration
 
-Here is a video demonstration of the application's use: [Watch the video](https://www.youtube.com/watch?v=AeX5Um61gxA)
+Here is a video demonstration of the application's use: [Watch the video](https://youtu.be/ArwHsVdXbE0)
